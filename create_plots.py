@@ -3,6 +3,11 @@ import numpy as np
 import pandas as pd
 import sys
 from tabulate import tabulate
+from mpl_toolkits.mplot3d import Axes3D
+from mpl_toolkits.mplot3d import proj3d
+from helpers import arrow3D
+
+setattr(Axes3D, 'arrow3D', arrow3D)
 
 
 class CreatePlot:

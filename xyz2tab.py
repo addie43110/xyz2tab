@@ -3,18 +3,18 @@
 #xyz2tab
 
 import sys
-import re
-import itertools                                                #for r-length tuples, in sorted order, no repeated elements
-import pandas as pd                                             #pandas tables
-import numpy as np                                              #for calculations
-from scipy.spatial.distance import pdist, squareform, cosine    #for the calculations of the distance matrix and angles (cosine)
-from tabulate import tabulate                                   #nice table output
-import matplotlib.pyplot as plt                                 #for molecule display
-from mpl_toolkits.mplot3d import Axes3D                         #for molecule display
-from mpl_toolkits.mplot3d import proj3d                         #for fancy arrows in xyz
+#import re
+#import itertools                                                #for r-length tuples, in sorted order, no repeated elements
+#import pandas as pd                                             #pandas tables
+#import numpy as np                                              #for calculations
+#from scipy.spatial.distance import pdist, squareform, cosine    #for the calculations of the distance matrix and angles (cosine)
+#from tabulate import tabulate                                   #nice table output
+#import matplotlib.pyplot as plt                                 #for molecule display
+                     #for molecule display
+#from mpl_toolkits.mplot3d import proj3d                         #for fancy arrows in xyz
 
-from lookup_tables import covalent_radii, atomic_weights, utf_sub_dict
-from helpers import *
+#from lookup_tables import covalent_radii, atomic_weights, utf_sub_dict
+from helpers import parse_args
 from print_tables import PrintTab
 from create_plots import CreatePlot
 
@@ -23,7 +23,7 @@ from create_plots import CreatePlot
 
 def main():
     args = parse_args()
-    setattr(Axes3D, 'arrow3D', arrow3D)
+    
     #for windows console
     sys.stdout.reconfigure(encoding='utf-8')  
 
