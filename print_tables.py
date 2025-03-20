@@ -554,3 +554,7 @@ class PrintTab:
     @property
     def sel_dist2(self):
         return self._sel_dist2
+
+    @property
+    def pr_sel_dist(self):
+        return self._pr_sel_dist

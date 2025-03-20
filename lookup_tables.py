@@ -72,3 +72,12 @@ utf_sub_dict = {
     "8" : "₈",
     "9" : "₉",
 }
+
+avg_bond_lengths = {
+    'C-C' : { 'single' : 1.535, 'double' : 1.339, 'triple' : 1.203},
+    'C-H' : { 'single' : 1.090},
+    'C-O' : { 'single' : 1.430, 'double' : 1.210},
+    'C-N' : { 'single' : 1.430, 'double' : 1.380, 'triple' : 1.160},
+    'H-O' : { 'single' : 0.960},
+    'N-O' : { 'single' : 1.360}
+}
