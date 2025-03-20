@@ -137,8 +137,9 @@ def print_dihedral_angle(xyz_df, args):
 def parse_args():
     parser = argparse.ArgumentParser( prog='xyz2tab', 
         description = "Print bond, lengths angles and more from xyz files.")
-    parser.add_argument("filename", 
-        help = "filename, xyz; e.g. mymolecule.xyz")
+    #parser.add_argument("filename", 
+    #    help = "filename, xyz; e.g. mymolecule.xyz")
+    parser.add_argument("allfrags_dir")
     #exclude atoms
     parser.add_argument('-ea','--excludeAt', nargs="+", type=str,
         help='exclude bonds and angles to specified atoms; e.g. -ea N1 or -ea N1 N2')

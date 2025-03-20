@@ -12,6 +12,8 @@ import re
 #import matplotlib.pyplot as plt                                 #for molecule display
                      #for molecule display
 #from mpl_toolkits.mplot3d import proj3d                         #for fancy arrows in xyz
+from os import path
+from pathlib import Path
 
 from lookup_tables import avg_bond_lengths
 from helpers import parse_args
@@ -33,7 +35,7 @@ def classify_bond(pair, bond_length):
     if atom1_label < atom2_label:
         bond_key = atom1_label + "-" + atom2_label
     else:
-        bond_key = atom2_label + "-" + atom2_label
+        bond_key = atom2_label + "-" + atom1_label
 
     bond_length_dict = avg_bond_lengths[bond_key]
     closest = 'single'
@@ -61,8 +63,53 @@ def table_to_gml(table):
         lines.append(f"\tedge [ source {atom1_id} target {atom2_id} label \"{gml_bond_char[order]}\" ]")
 
     lines.append("]")
-    s = "\n".join(lines)
-    print(s)
+    return "\n".join(lines)
+
+def write_gml_file(bond_table, filename="unnamed"):
+    classification = [classify_bond(x,y) for (x,y) in zip(bond_table['A-B'], bond_table['distance_calc'])]
+    with open(f"{filename}.gml", 'w') as file:
+        file.write(table_to_gml(classification))
+
+def read_allfrags(args, allfrags_dir="."):
+    Path(f"./iso_fragments").mkdir(exist_ok=True)
+    for f in Path(f"./iso_fragments").glob("*"):
+        if f.is_file():
+            f.unlink()
+
+    Path(f"./pair_fragments").mkdir(exist_ok=True)
+    for f in Path(f"./pair_fragments").glob("*"):
+        if f.is_file():
+            f.unlink()
+
+    with open(f"{allfrags_dir}/allfragments") as f:
+        line = f.readline() # discard header
+        while line:
+            line = f.readline()
+            tokens = line.split()
+            if len(tokens) != 6:
+                continue
+            [dire, frag_type, _, _,  _, _] = tokens
+            if frag_type=='isomer':
+                pt = PrintTab(args, f"{allfrags_dir}/{dire}/isomer.xyz")
+                write_gml_file(pt.bond_table, f"./iso_fragments/{dire}")
+                line = f.readline() # skip next line
+            elif frag_type=='fragmentpair':
+                [frag1_dir, _, _, _] = f.readline().split()
+                [frag2_dir, _, _, _] = f.readline().split()
+
+                try:
+                    pt1 = PrintTab(args, f"{allfrags_dir}/{frag1_dir}/fragment.xyz")
+                    write_gml_file(pt1.bond_table, f"./pair_fragments/{frag1_dir}")
+                except:
+                    pass
+                
+                try:
+                    pt2 = PrintTab(args, f"{allfrags_dir}/{frag2_dir}/fragment.xyz")
+                    write_gml_file(pt2.bond_table, f"./pair_fragments/{frag2_dir}")
+                except:
+                    pass
+
+            
 
 def main():
     args = parse_args()
@@ -70,17 +117,7 @@ def main():
     #for windows console
     sys.stdout.reconfigure(encoding='utf-8')  
 
-    pt = PrintTab(args)
-    pt.print_sel_dist_table()
-    pt.print_verbose_bond_table()
-    pt.print_short_bond_table()
-    pt.print_statistics_bond_table()
-
-    bond_table = pt.pr_sel_dist
-    classification = [classify_bond(x,y) for (x,y) in zip(bond_table['A-B'], bond_table['distance_calc'])]
-    table_to_gml(classification)
-
-    # cp = CreatePlot(args, pt.xyz_df, pt.sel_dist2)
+    read_allfrags(args, allfrags_dir=args.allfrags_dir)
     
 
 if __name__=="__main__":

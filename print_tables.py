@@ -13,10 +13,12 @@ class InputFileException(Exception):
     pass
 
 class PrintTab:
-    def __init__(self, args):
+    def __init__(self, args, filename=None):
         self._args = args
         self._radii_ext = self._args.radius / 100
-        (success, xyz_df) = self._read_input(args.filename)
+        if not filename:
+            filename = args.filename
+        (success, xyz_df) = self._read_input(filename)
         if not success: 
             raise InputFileException("There was an error reading the input .xyz file.")
         
@@ -556,5 +558,5 @@ class PrintTab:
         return self._sel_dist2
 
     @property
-    def pr_sel_dist(self):
+    def bond_table(self):
         return self._pr_sel_dist
