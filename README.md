@@ -1,5 +1,5 @@
 # BIG DISCLAIMER
-forked from radi0sus/xyz2tab. I intend to only use this program to extract bond information from .xyz files. Any other functionality (including the vast number of options in the original program) will be untested and likely broken due to refactoring.
+forked from radi0sus/xyz2tab. I intend to only use this program to extract bond information from .xyz files and create .gml files. Any other functionality (including the vast number of options in the original program) will be untested and likely broken due to refactoring.
 
 
 # xyz2tab
