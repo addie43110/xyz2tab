@@ -22,26 +22,29 @@ class PrintTab:
         
         self._xyz_df = xyz_df
         (xyz_df, sum_formula_list, fw, info_df)= self._setup_summary_info_tables()
-        self._print_summary_table(xyz_df, sum_formula_list, fw)
-        self._print_info_table(info_df)
+        self._xyz_df = xyz_df
+        self._sum_formula_list = sum_formula_list
+        self._fw = fw
+        self._info_df = info_df
 
         (pr_sel_dist, sel_dist, dist_mat_full) = self._setup_sel_dist_table()
-        self._print_sel_dist_table(pr_sel_dist)
+        self._pr_sel_dist = pr_sel_dist
+        self._sel_dist = sel_dist
+        self._dist_mat_full = dist_mat_full
 
         (s1, s2, s3) = self._setup_summary_bond_tables(sel_dist)
-        if args.verbose:
-            self._print_verbose_bond_table(s1)
-        self._print_short_bond_table(s2)
-        self._print_statistics_bond_table(s3)
+        self._verbose_bond_table = s1
+        self._short_bond_table = s2
+        self._stats_bond_table = s3
 
         (sel_angles, sel_dist2) = self._setup_selected_angles_table(dist_mat_full)
+        self._sel_angles = sel_angles
         self._sel_dist2 = sel_dist2
-        self._print_all_selected_angles_table(sel_angles)
+
         (a1,a2,a3) = self._setup_summary_angle_tables(sel_angles)
-        if args.verbose:
-            self._print_verbose_angle_table(a1)
-        self._print_short_angle_table(a2)
-        self._print_statistics_bond_table(a3)
+        self._verbose_angle_table = a1
+        self._short_angle_table = a2
+        self._stats_angle_table = a3
 
     def _read_input(self, filename):
         #read xyz into data frame
@@ -123,7 +126,7 @@ class PrintTab:
         #C1 1.1 0.0 1.5
         #C2 2.3 1.5 0.0
         #iloc [:,3:6] contains xyz coordinates
-        dist_mat_full=pd.DataFrame(squareform(pdist(xyz_df.iloc[:,1:4],'euclid')),
+        dist_mat_full=pd.DataFrame(squareform(pdist(xyz_df.iloc[:,3:6],'euclid')),
               columns = xyz_df[['atom1_idx','element','cov_radius']],
               index = xyz_df[['atom2_idx','element','cov_radius']])
 
@@ -262,58 +265,6 @@ class PrintTab:
 
         return (summary_bond_table_1, summary_bond_table_2, summary_bond_table_3)
 
-
-    def _print_verbose_bond_table(self, summary_bond_table_1):
-        #print verbose table El1-El2 | bond length only by request
-        print("\n", tabulate(summary_bond_table_1,
-            headers=['Atoms','Bond lengths /Å'], 
-            tablefmt='github',
-            floatfmt=(".4f"),
-            showindex=False))
-
-    def _print_short_bond_table(self, summary_bond_table_2):
-        #print short table
-        print("\n", tabulate(summary_bond_table_2,
-            headers=['Atoms','Bond lengths /Å'],
-            tablefmt='github',
-            floatfmt=(".4f"),
-            showindex=False))
-        
-    def _print_statistics_bond_table(self, summary_bond_table_3):
-        #print statistics table
-        print("\n", tabulate(summary_bond_table_3,
-            headers=['Atoms','Count','Mean /Å', 'Median /Å','Sam. std. dev.', \
-            'Pop. std. dev.','Std. error','Skewness'], 
-            tablefmt='github',
-            showindex=False))
-
-    def _print_sel_dist_table(self, pr_sel_dist):
-        print("\n", tabulate(pr_sel_dist,
-            headers=['Atoms','Bond length /Å'],
-            tablefmt='github',
-            floatfmt=(".4f"),
-            showindex=False))
-
-    def _print_summary_table(self, xyz_df, sum_formula_list, fw):
-        print("\n", tabulate([['Filename          :', self._args.filename],
-                        ['Number of atoms   :', xyz_df.shape[0]],
-                        ['Sum formula       :', ''.join(sum_formula_list)],
-                        ['Formula weight    :', '{:.2f} g/mol'.format(fw)],
-                        ['Excluded atoms    :', re.sub(r'[^a-zA-Z0-9,]','',str(self._args.excludeAt))],
-                        ['Excluded elements :', re.sub(r'[^a-zA-Z0-9,]','',str(self._args.excludeEl))],
-                        ['Included contacts :', re.sub(r'[^a-zA-Z0-9,]','',str(self._args.includeCon))],
-                        ['Covalent radius + :', '{:.2f} %'.format(self._args.radius)]],
-                        tablefmt='simple'))
-
-    def _print_info_table(self, info_df):
-        print("\n", tabulate(info_df,
-                    headers=['Element','Atom count','Mass fraction /%', 'Cov. radius /Å', 'Cov. radius + /Å'],
-                    tablefmt='github',
-                    floatfmt=(".2f"),
-                    showindex=False))
-
-    ############ Angles
-
     def _setup_selected_angles_table(self, dist_mat_full):
         args = self._args
         radii_ext = self._radii_ext
@@ -370,7 +321,7 @@ class PrintTab:
 
         #xyz array with coordinates of all atoms is needed
         #needed for (dihedral) angle calculation
-        xyzarr = xyz_df.iloc[:,1:4].to_numpy()
+        xyzarr = xyz_df.iloc[:,3:6].to_numpy()
         # xyzarr = xyz_df.iloc[:,3:6].to_numpy()
         #angle calculation is not as fast as bond length calculation
 
@@ -501,7 +452,65 @@ class PrintTab:
 
         return (summary_angle_table_1, summary_angle_table_2, summary_angle_table_3)
 
-    def _print_all_selected_angles_table(self, sel_angles):
+    def print_verbose_bond_table(self):
+        summary_bond_table_1 = self._verbose_bond_table
+        #print verbose table El1-El2 | bond length only by request
+        print("\n", tabulate(summary_bond_table_1,
+            headers=['Atoms','Bond lengths /Å'], 
+            tablefmt='github',
+            floatfmt=(".4f"),
+            showindex=False))
+
+    def print_short_bond_table(self):
+        summary_bond_table_2 = self._short_bond_table
+        #print short table
+        print("\n", tabulate(summary_bond_table_2,
+            headers=['Atoms','Bond lengths /Å'],
+            tablefmt='github',
+            floatfmt=(".4f"),
+            showindex=False))
+        
+    def print_statistics_bond_table(self):
+        summary_bond_table_3 = self._stats_bond_table
+        #print statistics table
+        print("\n", tabulate(summary_bond_table_3,
+            headers=['Atoms','Count','Mean /Å', 'Median /Å','Sam. std. dev.', \
+            'Pop. std. dev.','Std. error','Skewness'], 
+            tablefmt='github',
+            showindex=False))
+
+    def print_sel_dist_table(self):
+        pr_sel_dist = self._pr_sel_dist
+        print("\n", tabulate(pr_sel_dist,
+            headers=['Atoms','Bond length /Å'],
+            tablefmt='github',
+            floatfmt=(".4f"),
+            showindex=False))
+
+    def print_summary_table(self):
+        xyz_df = self._xyz_df
+        sum_formula_list = self._sum_formula_list
+        fw = self._fw
+        print("\n", tabulate([['Filename          :', self._args.filename],
+                        ['Number of atoms   :', xyz_df.shape[0]],
+                        ['Sum formula       :', ''.join(sum_formula_list)],
+                        ['Formula weight    :', '{:.2f} g/mol'.format(fw)],
+                        ['Excluded atoms    :', re.sub(r'[^a-zA-Z0-9,]','',str(self._args.excludeAt))],
+                        ['Excluded elements :', re.sub(r'[^a-zA-Z0-9,]','',str(self._args.excludeEl))],
+                        ['Included contacts :', re.sub(r'[^a-zA-Z0-9,]','',str(self._args.includeCon))],
+                        ['Covalent radius + :', '{:.2f} %'.format(self._args.radius)]],
+                        tablefmt='simple'))
+
+    def print_info_table(self):
+        info_df = self.info_df
+        print("\n", tabulate(info_df,
+                    headers=['Element','Atom count','Mass fraction /%', 'Cov. radius /Å', 'Cov. radius + /Å'],
+                    tablefmt='github',
+                    floatfmt=(".2f"),
+                    showindex=False))
+
+    def print_all_selected_angles_table(self):
+        sel_angles = self._sel_angles
         #table with all selected angles A-B-C | 123.45°
         pr_sel_angles=sel_angles[['A-B-C','angle_calc']]
         print("\n",tabulate(pr_sel_angles,
@@ -510,7 +519,8 @@ class PrintTab:
             floatfmt=(".2f"),
             showindex=False))
 
-    def _print_verbose_angle_table(self, summary_angle_table_1):
+    def print_verbose_angle_table(self):
+        summary_angle_table_1 = self._verbose_angle_table
         #print verbose table El1-El2-El3 | angle only by request
         if args.verbose:
             print(f"{tabulate(summary_angle_table_1,
@@ -519,7 +529,8 @@ class PrintTab:
                 floatfmt=(".2f"),
                 showindex=False)}")
 
-    def _print_short_angle_table(self, summary_angle_table_2):
+    def print_short_angle_table(self):
+        summary_angle_table_2 = self._short_angle_table
         #print short table
         print(f"\n{tabulate(summary_angle_table_2,
             headers=['Atoms','Angle /°'], 
@@ -527,7 +538,8 @@ class PrintTab:
             floatfmt=(".2f"),
             showindex=False)}")
 
-    def _print_statistics_angle_table(self, summary_angle_table_3):
+    def print_statistics_angle_table(self):
+        summary_angle_table_3 = self._stats_angle_table
         #print statistics table
         print(f"\n{tabulate(summary_angle_table_3,
             headers=['Atoms','Count','Mean /°', 'Median /°','Sam. std. dev.', \

@@ -29,11 +29,11 @@ def main():
 
 
     pt = PrintTab(args)
+    pt.print_sel_dist_table()
+    pt.print_short_bond_table()
+    pt.print_statistics_bond_table()
 
-    if args.dihedral:
-        print_dihedral_angle(pt.xyz_df, args)
-
-    cp = CreatePlot(args, pt.xyz_df, pt.sel_dist2)
+    # cp = CreatePlot(args, pt.xyz_df, pt.sel_dist2)
     
 
 if __name__=="__main__":
