@@ -128,6 +128,7 @@ class PrintTab:
         #C1 1.1 0.0 1.5
         #C2 2.3 1.5 0.0
         #iloc [:,3:6] contains xyz coordinates
+        print(xyz_df)
         dist_mat_full=pd.DataFrame(squareform(pdist(xyz_df.iloc[:,3:6],'euclid')),
               columns = xyz_df[['atom1_idx','element','cov_radius']],
               index = xyz_df[['atom2_idx','element','cov_radius']])
