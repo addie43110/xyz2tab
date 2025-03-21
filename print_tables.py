@@ -22,6 +22,8 @@ class PrintTab:
         if not success: 
             raise InputFileException("There was an error reading the input .xyz file.")
         
+        print(f"PRINTTAB PROCESSING {filename}")
+        
         self._xyz_df = xyz_df
         (xyz_df, sum_formula_list, fw, info_df)= self._setup_summary_info_tables()
         self._xyz_df = xyz_df
@@ -143,7 +145,6 @@ class PrintTab:
         #bring it to a "normal" form, distance matrix --> disctance data frame
         dist_df=pd.DataFrame(dist_mat_red.to_records())
         #bring it to a "normal" form ...
-        print(f"here1: {dist_df['index'].tolist()}")
         dist_df[['atom1_idx','element1','cov_radius1']]=pd.DataFrame(dist_df['index'].tolist(), index=dist_df.index)
         dist_df[['atom2_idx','element2','cov_radius2']]=pd.DataFrame(dist_df['level_1'].tolist(), index=dist_df.index)
         dist_df.drop(['index', 'level_1'], axis=1,inplace=True)
