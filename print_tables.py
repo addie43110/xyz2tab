@@ -128,8 +128,6 @@ class PrintTab:
         #C1 1.1 0.0 1.5
         #C2 2.3 1.5 0.0
         #iloc [:,3:6] contains xyz coordinates
-        print(f"xyz_df: {xyz_df}")
-        print(f"iloc: {xyz_df[['atom1_idx','element','cov_radius']]}")
         dist_mat_full=pd.DataFrame(squareform(pdist(xyz_df.iloc[:,3:6],'euclid')),
               columns = xyz_df[['atom1_idx','element','cov_radius']],
               index = xyz_df[['atom2_idx','element','cov_radius']])
@@ -145,6 +143,7 @@ class PrintTab:
         #bring it to a "normal" form, distance matrix --> disctance data frame
         dist_df=pd.DataFrame(dist_mat_red.to_records())
         #bring it to a "normal" form ...
+        print(f"here1: {dist_df['index'].tolist()}")
         dist_df[['atom1_idx','element1','cov_radius1']]=pd.DataFrame(dist_df['index'].tolist(), index=dist_df.index)
         dist_df[['atom2_idx','element2','cov_radius2']]=pd.DataFrame(dist_df['level_1'].tolist(), index=dist_df.index)
         dist_df.drop(['index', 'level_1'], axis=1,inplace=True)
