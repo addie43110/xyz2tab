@@ -152,8 +152,9 @@ def read_allfrags(args, allfrags_dir=".", initial_pname="unnamed"):
 def read_fragment(args, path_to_fragment, where_to_write_gml, where_to_write_rule, parent_graph, parent_name):
     try:
         pt = PrintTab(args, path_to_fragment)
-    except:
+    except Exception as e:
         print(f"Encountered malformed .xyz file at {path_to_fragment}. Skipping.")
+        print(e)
         return
     child_graph = write_gml_file(pt.bond_table, where_to_write_gml)
     if child_graph and parent_graph:
