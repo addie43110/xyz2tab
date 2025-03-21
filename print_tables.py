@@ -123,6 +123,7 @@ class PrintTab:
 
         if len(xyz_df)<=1:
             print("Only one atom found; cannot make a bond-length table.")
+            self._has_bond_table = False
             return (None, None, None)
 
         #calculate the full distance matrix & put to square form, e.g.:
@@ -230,6 +231,7 @@ class PrintTab:
 
         #table with all selected distances, A-B | 1.234 Å
         pr_sel_dist=sel_dist[['A-B','distance_calc']]
+        self._has_bond_table = True
         return (pr_sel_dist, sel_dist, dist_mat_full)
 
     def _setup_summary_bond_tables(self, sel_dist):
@@ -564,3 +566,7 @@ class PrintTab:
     @property
     def bond_table(self):
         return self._pr_sel_dist
+
+    @property
+    def has_bond_table(self):
+        return self._has_bond_table

@@ -70,8 +70,8 @@ def table_to_gml(table):
 
 # returns Graph object of the gml file written
 def write_gml_file(pt, filename="unnamed") -> Graph:
-    bond_table = pt.bond_table
-    if bond_table:
+    if pt.has_bond_table:
+        bond_table = pt.bond_table
         classification = [classify_bond(x,y) for (x,y) in zip(bond_table['A-B'], bond_table['distance_calc'])]
         gml_string = table_to_gml(classification)
     else: #there is only a single atom, so could not make any bond information
