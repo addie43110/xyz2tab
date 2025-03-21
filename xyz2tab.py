@@ -80,7 +80,7 @@ def write_gml_file(pt, filename="unnamed") -> Graph:
     try:
         mod_graph = mod.Graph.fromGMLString(gml_string)
     except mod.libpymod.InputError:
-        print(f"Error trying to write {filename}.gml. Likely graph is not connected. Skipping.")
+        print(f"Error trying to write {filename}.gml. Likely graph is not connected. Skipping.\n")
         return None
     g = Graph(modGraph=mod_graph)
     with open(f"{filename}.gml", 'w') as file:
