@@ -16,6 +16,7 @@ class PrintTab:
     def __init__(self, args, filename=None):
         self._args = args
         self._radii_ext = self._args.radius / 100
+        self._filename = filename
         if not filename:
             filename = args.filename
         (success, xyz_df) = self._read_input(filename)
@@ -122,7 +123,7 @@ class PrintTab:
         args = self._args
 
         if len(xyz_df)<=1:
-            print("Only one atom found; cannot make a bond-length table.")
+            print(f"Only one atom found in {self._filename}; cannot make a bond-length table.")
             self._has_bond_table = False
             return (None, None, None)
 
