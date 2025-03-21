@@ -113,7 +113,7 @@ def read_allfrags(args, allfrags_dir=".", initial_pname="unnamed"):
                     look_in_iso = True if match.group(2)[0]=='p' else False
                     fragment_dir = "iso_fragments" if look_in_iso else "pair_fragments"
                     parent_filename = match.group(1)+match.group(2)
-                    mod.fromGMLFile(f"./{fragment_dir}/{parent_filename}.gml")
+                    mod.Graph.fromGMLFile(f"./{fragment_dir}/{parent_filename}.gml")
                     parent_graph = Graph(modGraph=parent_graph)
                     parent_name = parent_filename
                     update_parent = False
@@ -129,7 +129,7 @@ def read_allfrags(args, allfrags_dir=".", initial_pname="unnamed"):
                     look_in_iso = True if match.group(2)[0]=='p' else False
                     fragment_dir = "iso_fragments" if look_in_iso else "pair_fragments"
                     parent_filename = match.group(1)+match.group(2)
-                    mod.fromGMLFile(f"./{fragment_dir}/{parent_filename}.gml")
+                    mod.Graph.fromGMLFile(f"./{fragment_dir}/{parent_filename}.gml")
                     parent_graph = Graph(modGraph=parent_graph)
                     parent_name = parent_filename
                     update_parent = False
