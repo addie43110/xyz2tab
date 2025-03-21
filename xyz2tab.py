@@ -163,7 +163,7 @@ def main():
     #for windows console
     sys.stdout.reconfigure(encoding='utf-8')  
 
-    read_allfrags(args, allfrags_dir=args.allfrags_dir)
+    read_allfrags(args, allfrags_dir=args.allfrags_dir, args.name)
     
 
 if __name__=="__main__":
