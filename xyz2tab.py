@@ -21,7 +21,7 @@ from reaction import Reaction
 from lookup_tables import avg_bond_lengths
 from helpers import parse_args
 from print_tables import PrintTab
-from create_plots import CreatePlot
+# from create_plots import CreatePlot
 
 #pd.set_option("display.max_rows", None, "display.max_columns", None)
 
