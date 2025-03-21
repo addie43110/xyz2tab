@@ -88,14 +88,14 @@ def make_exist_dir(dir_path):
         if f.is_file():
             f.unlink()
 
-def read_allfrags(args, allfrags_dir="."):
+def read_allfrags(args, allfrags_dir=".", initial_pname="unnamed"):
     make_exist_dir("./iso_fragments")
     make_exist_dir("./pair_fragments")
     make_exist_dir("./rules")
 
+    parent_name=initial_pname
     pt_start = PrintTab(args, f"{allfrags_dir}/in.xyz")
-    parent_graph = write_gml_file(pt_start.bond_table, f"./iso_fragments/{allfrags_dir}")
-    parent_name = f"{allfrags_dir}"
+    parent_graph = write_gml_file(pt_start.bond_table, f"./iso_fragments/{initial_pname}")
 
 
     with open(f"{allfrags_dir}/allfragments") as f:

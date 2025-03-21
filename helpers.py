@@ -140,6 +140,7 @@ def parse_args():
     #parser.add_argument("filename", 
     #    help = "filename, xyz; e.g. mymolecule.xyz")
     parser.add_argument("allfrags_dir")
+    parser.add_argument('-n', '--name', type=str, help="name of the parent molecule (the one being fragmented)", default="unnamed")
     #exclude atoms
     parser.add_argument('-ea','--excludeAt', nargs="+", type=str,
         help='exclude bonds and angles to specified atoms; e.g. -ea N1 or -ea N1 N2')
