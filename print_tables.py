@@ -123,6 +123,8 @@ class PrintTab:
         xyz_df = self._xyz_df
         args = self._args
 
+        print(xyz_df)
+
         #calculate the full distance matrix & put to square form, e.g.:
         #
         #   C0  C1  C2
