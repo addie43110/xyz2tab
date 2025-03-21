@@ -150,12 +150,13 @@ def read_allfrags(args, allfrags_dir=".", initial_pname="unnamed"):
                 update_parent = True
 
 def read_fragment(args, path_to_fragment, where_to_write_gml, where_to_write_rule, parent_graph, parent_name):
-    try:
+    """ try:
         pt = PrintTab(args, path_to_fragment)
     except Exception as e:
         print(f"Encountered malformed .xyz file at {path_to_fragment}. Skipping.")
         print(e)
-        return
+        return """
+    pt = PrintTab(args, path_to_fragment)
     child_graph = write_gml_file(pt.bond_table, where_to_write_gml)
     if child_graph and parent_graph:
         rule_gml_string = Reaction(leftGraph=parent_graph, rightGraph=child_graph, name=where_to_write_rule[8:-4]).to_ruleGML_string()
