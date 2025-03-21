@@ -92,7 +92,7 @@ def make_exist_dir(dir_path):
         if f.is_file():
             f.unlink()
 
-def update_parent(directory):
+def updateParent(directory):
     match = re.match(r"^(\w*)([pf]\d+)(?:p\d+)(?:f\d+)?$", directory)
     look_in_iso = True if match.group(2)[0]=='p' else False
     fragment_dir = "iso_fragments" if look_in_iso else "pair_fragments"
@@ -122,7 +122,7 @@ def read_allfrags(args, allfrags_dir=".", initial_pname="unnamed"):
                 continue
             [dire, frag_type, _, _,  _, _] = tokens
             if update_parent:
-                    (parent_graph, parent_name) = update_parent(dire)
+                    (parent_graph, parent_name) = updateParent(dire)
                     update_parent = False
             if frag_type=='isomer':
                 pt = PrintTab(args, f"{allfrags_dir}/{dire}/isomer.xyz")
