@@ -97,7 +97,11 @@ def updateParent(directory):
     look_in_iso = True if match.group(2)[0]=='p' else False
     fragment_dir = "iso_fragments" if look_in_iso else "pair_fragments"
     parent_filename = match.group(1)+match.group(2)
-    parent_graph = mod.Graph.fromGMLFile(f"./{fragment_dir}/{parent_filename}.gml")
+    try:
+        parent_graph = mod.Graph.fromGMLFile(f"./{fragment_dir}/{parent_filename}.gml")
+    except:
+        print("Parent fragment not found. Omitting rules with direct children.")
+        return (None, None)
     parent_graph = Graph(modGraph=parent_graph)
     parent_name = parent_filename
     return (parent_graph, parent_name)
@@ -152,7 +156,7 @@ def read_fragment(args, path_to_fragment, where_to_write_gml, where_to_write_rul
         print(f"Encountered malformed .xyz file at {path_to_fragment}. Skipping.")
         return
     child_graph = write_gml_file(pt.bond_table, where_to_write_gml)
-    if child_graph:
+    if child_graph and parent_graph:
         rule_gml_string = Reaction(leftGraph=parent_graph, rightGraph=child_graph, name=where_to_write_rule[8:-4]).to_ruleGML_string()
         write_gml_string(rule_gml_string, where_to_write_rule)
 
@@ -162,7 +166,7 @@ def main():
     #for windows console
     sys.stdout.reconfigure(encoding='utf-8')  
 
-    read_allfrags(args, allfrags_dir=args.allfrags_dir, initial_pname=args.name)
+    read_allfrags(args, allfrags_dir=args.allfrags_dir[:-1], initial_pname=args.name)
     
 
 if __name__=="__main__":
