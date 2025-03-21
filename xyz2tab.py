@@ -108,7 +108,8 @@ def read_allfrags(args, allfrags_dir=".", initial_pname="unnamed"):
             [dire, frag_type, _, _,  _, _] = tokens
             if frag_type=='isomer':
                 if update_parent:
-                    match = re.match(r"^(\w+)([pf]\d+)(?:p\d+)(?:f\d+)?$", dire)
+                    match = re.match(r"^(\w*)([pf]\d+)(?:p\d+)(?:f\d+)?$", dire)
+                    print(f"searching for match in {dire}")
                     look_in_iso = True if match.group(2)[0]=='p' else False
                     fragment_dir = "iso_fragments" if look_in_iso else "pair_fragments"
                     parent_filename = match.group(1)+match.group(2)
