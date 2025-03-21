@@ -22,8 +22,6 @@ class PrintTab:
         if not success: 
             raise InputFileException("There was an error reading the input .xyz file.")
         
-        print(f"PRINTTAB PROCESSING {filename}")
-        
         self._xyz_df = xyz_df
         (xyz_df, sum_formula_list, fw, info_df)= self._setup_summary_info_tables()
         self._xyz_df = xyz_df
@@ -36,7 +34,7 @@ class PrintTab:
         self._sel_dist = sel_dist
         self._dist_mat_full = dist_mat_full
 
-        (s1, s2, s3) = self._setup_summary_bond_tables(sel_dist)
+        """ (s1, s2, s3) = self._setup_summary_bond_tables(sel_dist)
         self._verbose_bond_table = s1
         self._short_bond_table = s2
         self._stats_bond_table = s3
@@ -48,7 +46,7 @@ class PrintTab:
         (a1,a2,a3) = self._setup_summary_angle_tables(sel_angles)
         self._verbose_angle_table = a1
         self._short_angle_table = a2
-        self._stats_angle_table = a3
+        self._stats_angle_table = a3 """
 
     def _read_input(self, filename):
         #read xyz into data frame
@@ -123,7 +121,9 @@ class PrintTab:
         xyz_df = self._xyz_df
         args = self._args
 
-        print(xyz_df)
+        if len(xyz_df)<=1:
+            print("Only one atom found; cannot make a bond-length table.")
+            return (None, None, None)
 
         #calculate the full distance matrix & put to square form, e.g.:
         #

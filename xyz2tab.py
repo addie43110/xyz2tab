@@ -69,9 +69,14 @@ def table_to_gml(table):
     return "\n".join(lines)
 
 # returns Graph object of the gml file written
-def write_gml_file(bond_table, filename="unnamed") -> Graph:
-    classification = [classify_bond(x,y) for (x,y) in zip(bond_table['A-B'], bond_table['distance_calc'])]
-    gml_string = table_to_gml(classification)
+def write_gml_file(pt, filename="unnamed") -> Graph:
+    bond_table = pt.bond_table
+    if bond_table:
+        classification = [classify_bond(x,y) for (x,y) in zip(bond_table['A-B'], bond_table['distance_calc'])]
+        gml_string = table_to_gml(classification)
+    else: #there is only a single atom, so could not make any bond information
+        element = pt.xyz_df[['element']][0]
+        gml_string = f"graph [\n\tnode [ id 0 label {element} ]\n]"
     try:
         mod_graph = mod.Graph.fromGMLString(gml_string)
     except mod.libpymod.InputError:
@@ -114,7 +119,7 @@ def read_allfrags(args, allfrags_dir=".", initial_pname="unnamed"):
 
     parent_name=initial_pname
     pt_start = PrintTab(args, f"{allfrags_dir}/in.xyz")
-    parent_graph = write_gml_file(pt_start.bond_table, f"./iso_fragments/{initial_pname}")
+    parent_graph = write_gml_file(pt_start, f"./iso_fragments/{initial_pname}")
     update_parent = False
 
     with open(f"{allfrags_dir}/allfragments") as f:
@@ -157,7 +162,7 @@ def read_fragment(args, path_to_fragment, where_to_write_gml, where_to_write_rul
         print(e)
         return """
     pt = PrintTab(args, path_to_fragment)
-    child_graph = write_gml_file(pt.bond_table, where_to_write_gml)
+    child_graph = write_gml_file(pt, where_to_write_gml)
     if child_graph and parent_graph:
         rule_gml_string = Reaction(leftGraph=parent_graph, rightGraph=child_graph, name=where_to_write_rule[8:-4]).to_ruleGML_string()
         write_gml_string(rule_gml_string, where_to_write_rule)
