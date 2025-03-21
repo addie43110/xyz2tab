@@ -153,7 +153,7 @@ def read_fragment(args, path_to_fragment, where_to_write_gml, where_to_write_rul
         return
     child_graph = write_gml_file(pt.bond_table, where_to_write_gml)
     if child_graph:
-        rule_gml_string = Reaction(leftGraph=parent_graph, rightGraph=child_graph, name=where_to_write_rule[8:-4]),to_ruleGML_string()
+        rule_gml_string = Reaction(leftGraph=parent_graph, rightGraph=child_graph, name=where_to_write_rule[8:-4]).to_ruleGML_string()
         write_gml_string(rule_gml_string, where_to_write_rule)
 
 def main():
