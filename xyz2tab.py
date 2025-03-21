@@ -72,7 +72,11 @@ def table_to_gml(table):
 def write_gml_file(bond_table, filename="unnamed") -> Graph:
     classification = [classify_bond(x,y) for (x,y) in zip(bond_table['A-B'], bond_table['distance_calc'])]
     gml_string = table_to_gml(classification)
-    mod_graph = mod.Graph.fromGMLString(gml_string)
+    try:
+        mod_graph = mod.Graph.fromGMLString(gml_string)
+    except mod.libpymod.InputError:
+        print(f"Error trying to write {filename}.gml. Likely graph is not connected. Skipping.")
+        return None
     g = Graph(modGraph=mod_graph)
     with open(f"{filename}.gml", 'w') as file:
         file.write(gml_string)
@@ -87,6 +91,17 @@ def make_exist_dir(dir_path):
     for f in Path(dir_path).glob("*"):
         if f.is_file():
             f.unlink()
+
+def update_parent(directory):
+    match = re.match(r"^(\w*)([pf]\d+)(?:p\d+)(?:f\d+)?$", directory)
+    look_in_iso = True if match.group(2)[0]=='p' else False
+    fragment_dir = "iso_fragments" if look_in_iso else "pair_fragments"
+    parent_filename = match.group(1)+match.group(2)
+    parent_graph = mod.Graph.fromGMLFile(f"./{fragment_dir}/{parent_filename}.gml")
+    parent_graph = Graph(modGraph=parent_graph)
+    parent_name = parent_filename
+    return (parent_graph, parent_name)
+
 
 def read_allfrags(args, allfrags_dir=".", initial_pname="unnamed"):
     make_exist_dir("./iso_fragments")
@@ -106,48 +121,35 @@ def read_allfrags(args, allfrags_dir=".", initial_pname="unnamed"):
             if len(tokens) != 6:
                 continue
             [dire, frag_type, _, _,  _, _] = tokens
-            if frag_type=='isomer':
-                if update_parent:
-                    match = re.match(r"^(\w*)([pf]\d+)(?:p\d+)(?:f\d+)?$", dire)
-                    look_in_iso = True if match.group(2)[0]=='p' else False
-                    fragment_dir = "iso_fragments" if look_in_iso else "pair_fragments"
-                    parent_filename = match.group(1)+match.group(2)
-                    parent_graph = mod.Graph.fromGMLFile(f"./{fragment_dir}/{parent_filename}.gml")
-                    parent_graph = Graph(modGraph=parent_graph)
-                    parent_name = parent_filename
+            if update_parent:
+                    (parent_graph, parent_name) = update_parent(dire)
                     update_parent = False
-
+            if frag_type=='isomer':
                 pt = PrintTab(args, f"{allfrags_dir}/{dire}/isomer.xyz")
                 child_graph = write_gml_file(pt.bond_table, f"./iso_fragments/{dire}")
-                rule_gml_string = Reaction(leftGraph=parent_graph, rightGraph=child_graph, name=f"{parent_name}->{dire}").to_ruleGML_string()
-                write_gml_string(rule_gml_string, f"./rules/{parent_name}_{dire}.gml")
+                if child_graph:
+                    rule_gml_string = Reaction(leftGraph=parent_graph, rightGraph=child_graph, name=f"{parent_name}->{dire}").to_ruleGML_string()
+                    write_gml_string(rule_gml_string, f"./rules/{parent_name}_{dire}.gml")
                 line = f.readline() # skip next line
             elif frag_type=='fragmentpair':
-                if update_parent:
-                    match = re.match(r"^(\w*)([pf]\d+)(?:p\d+)(?:f\d+)?$", dire)
-                    look_in_iso = True if match.group(2)[0]=='p' else False
-                    fragment_dir = "iso_fragments" if look_in_iso else "pair_fragments"
-                    parent_filename = match.group(1)+match.group(2)
-                    parent_graph = mod.Graph.fromGMLFile(f"./{fragment_dir}/{parent_filename}.gml")
-                    parent_graph = Graph(modGraph=parent_graph)
-                    parent_name = parent_filename
-                    update_parent = False
                 [frag1_dir, _, _, _] = f.readline().split()
                 [frag2_dir, _, _, _] = f.readline().split()
 
                 try:
                     pt1 = PrintTab(args, f"{allfrags_dir}/{frag1_dir}/fragment.xyz")
                     child_graph = write_gml_file(pt1.bond_table, f"./pair_fragments/{frag1_dir}")
-                    rule_gml_string = Reaction(leftGraph=parent_graph, rightGraph=child_graph, name=f"{parent_name}->{frag1_dir}").to_ruleGML_string()
-                    write_gml_string(rule_gml_string, f"./rules/{parent_name}_{frag1_dir}.gml")
+                    if child_graph:
+                        rule_gml_string = Reaction(leftGraph=parent_graph, rightGraph=child_graph, name=f"{parent_name}->{frag1_dir}").to_ruleGML_string()
+                        write_gml_string(rule_gml_string, f"./rules/{parent_name}_{frag1_dir}.gml")
                 except:
                     print(f"Encountered malformed .xyz file at {allfrags_dir}/{frag1_dir}/fragment.xyz. Skipping.")
                 
                 try:
                     pt2 = PrintTab(args, f"{allfrags_dir}/{frag2_dir}/fragment.xyz")
                     child_graph = write_gml_file(pt2.bond_table, f"./pair_fragments/{frag2_dir}")
-                    rule_gml_string = Reaction(leftGraph=parent_graph, rightGraph=child_graph, name=f"{parent_name}->{frag2_dir}").to_ruleGML_string()
-                    write_gml_string(rule_gml_string, f"./rules/{parent_name}_{frag2_dir}.gml")
+                    if child_graph:
+                        rule_gml_string = Reaction(leftGraph=parent_graph, rightGraph=child_graph, name=f"{parent_name}->{frag2_dir}").to_ruleGML_string()
+                        write_gml_string(rule_gml_string, f"./rules/{parent_name}_{frag2_dir}.gml")
                 except:
                     print(f"Encountered malformed .xyz file at {allfrags_dir}/{frag2_dir}/fragment.xyz. Skipping.")
             elif frag_type=='fragment_type':
