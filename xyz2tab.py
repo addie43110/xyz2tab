@@ -109,11 +109,10 @@ def read_allfrags(args, allfrags_dir=".", initial_pname="unnamed"):
             if frag_type=='isomer':
                 if update_parent:
                     match = re.match(r"^(\w*)([pf]\d+)(?:p\d+)(?:f\d+)?$", dire)
-                    print(f"searching for match in {dire}")
                     look_in_iso = True if match.group(2)[0]=='p' else False
                     fragment_dir = "iso_fragments" if look_in_iso else "pair_fragments"
                     parent_filename = match.group(1)+match.group(2)
-                    mod.Graph.fromGMLFile(f"./{fragment_dir}/{parent_filename}.gml")
+                    parent_graph = mod.Graph.fromGMLFile(f"./{fragment_dir}/{parent_filename}.gml")
                     parent_graph = Graph(modGraph=parent_graph)
                     parent_name = parent_filename
                     update_parent = False
@@ -125,11 +124,11 @@ def read_allfrags(args, allfrags_dir=".", initial_pname="unnamed"):
                 line = f.readline() # skip next line
             elif frag_type=='fragmentpair':
                 if update_parent:
-                    match = re.match(r"^(\w+)([pf]\d+)(?:p\d+)(?:f\d+)?$", dire)
+                    match = re.match(r"^(\w*)([pf]\d+)(?:p\d+)(?:f\d+)?$", dire)
                     look_in_iso = True if match.group(2)[0]=='p' else False
                     fragment_dir = "iso_fragments" if look_in_iso else "pair_fragments"
                     parent_filename = match.group(1)+match.group(2)
-                    mod.Graph.fromGMLFile(f"./{fragment_dir}/{parent_filename}.gml")
+                    parent_graph = mod.Graph.fromGMLFile(f"./{fragment_dir}/{parent_filename}.gml")
                     parent_graph = Graph(modGraph=parent_graph)
                     parent_name = parent_filename
                     update_parent = False
