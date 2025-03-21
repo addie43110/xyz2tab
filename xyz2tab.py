@@ -96,7 +96,7 @@ def read_allfrags(args, allfrags_dir=".", initial_pname="unnamed"):
     parent_name=initial_pname
     pt_start = PrintTab(args, f"{allfrags_dir}/in.xyz")
     parent_graph = write_gml_file(pt_start.bond_table, f"./iso_fragments/{initial_pname}")
-
+    update_parent = False
 
     with open(f"{allfrags_dir}/allfragments") as f:
         line = f.readline() # discard header
