@@ -1,7 +1,7 @@
 import numpy as np
 import argparse
 import sys
-from matplotlib.patches import FancyArrowPatch
+# from matplotlib.patches import FancyArrowPatch
 from scipy.spatial.distance import pdist, squareform, cosine
 
 from lookup_tables import covalent_radii, atomic_weights, utf_sub_dict
@@ -94,7 +94,7 @@ def set_axes_equal(ax):
 
 #draw fancy arrows in x y z
 #https://gist.github.com/WetHat/1d6cd0f7309535311a539b42cccca89c
-class Arrow3D(FancyArrowPatch):
+""" class Arrow3D(FancyArrowPatch):
     def __init__(self, x, y, z, dx, dy, dz, *args, **kwargs):
         super().__init__((0, 0), (0, 0), *args, **kwargs)
         self._xyz = (x, y, z)
@@ -113,12 +113,12 @@ class Arrow3D(FancyArrowPatch):
         
         xs, ys, zs = proj3d.proj_transform((x1, x2), (y1, y2), (z1, z2), self.axes.M)
         self.set_positions((xs[0], ys[0]), (xs[1], ys[1]))
-        return np.min(zs) 
+        return np.min(zs)  """
     
-def arrow3D(ax, x, y, z, dx, dy, dz, *args, **kwargs):
+""" def arrow3D(ax, x, y, z, dx, dy, dz, *args, **kwargs):
     '''Add an 3d arrow to an `Axes3D` instance.'''
     arrow = Arrow3D(x, y, z, dx, dy, dz, *args, **kwargs)
-    ax.add_artist(arrow)
+    ax.add_artist(arrow) """
 
 def print_dihedral_angle(xyz_df, args):
     #print the dihedral angle on request
