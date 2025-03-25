@@ -81,5 +81,5 @@ avg_bond_lengths = {
     'H-O' : { 'single' : 0.960},
     'N-O' : { 'single' : 1.360},
     'H-N' : { 'single' : 1.020},
-    'N-N' : { 'single' : 1.440}, {'double' : 1.290}, {'triple' : 1.09}
+    'N-N' : { 'single' : 1.440, 'double' : 1.290, 'triple' : 1.09}
 }
