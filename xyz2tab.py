@@ -99,12 +99,12 @@ def make_exist_dir(dir_path):
             f.unlink()
 
 def updateParent(directory):
-    match = re.match(r"^(\w*)([pf]\d+)(?:p\d+)(?:f\d+)?$", directory)
+    """ match = re.match(r"^(\w*)([pf]\d+)(?:p\d+)(?:f\d+)?$", directory)
     look_in_iso = True if match.group(2)[0]=='p' else False
     fragment_dir = "iso_fragments" if look_in_iso else "pair_fragments"
-    parent_filename = match.group(1)+match.group(2)
+    parent_filename = match.group(1)+match.group(2) """
     try:
-        parent_graph = mod.Graph.fromGMLFile(f"./{fragment_dir}/{parent_filename}.gml")
+        parent_graph = mod.Graph.fromGMLFile(f"./all_fragments/{parent_filename}.gml")
     except:
         print("Parent fragment not found. Omitting rules with direct children.")
         return (None, None)
