@@ -78,12 +78,15 @@ def write_gml_file(pt, filename="unnamed") -> Graph:
     else: #there is only a single atom, so could not make any bond information
         element = pt.xyz_df.iloc[0]['element']
         gml_string = f"graph [\n\tnode [ id 0 label {element} ]\n]"
+
+   g = Graph(gml_string)
+
     try:
         mod_graph = mod.Graph.fromGMLString(gml_string)
+        g = Graph(mod_graph)
     except mod.libpymod.InputError:
         print(f"Error trying to write {filename}.gml. Likely graph is not connected or no edges found.")
 
-    g = Graph(mod_graph) if mod_graph else Graph(gml_string)
     with open(f"{filename}.gml", 'w') as file:
         file.write(gml_string)
     return g
