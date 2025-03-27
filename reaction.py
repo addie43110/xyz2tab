@@ -13,8 +13,8 @@ class Reaction:
     '''
     def __init__(self, rule=None, leftGraph=None, rightGraph=None, isMinimal=False, name="no name"):
         self._name: str = rule.name if rule else name
-        self._leftGraph: 'Graph' = leftGraph if leftGraph else Graph(modGraph=rule.left)
-        self._rightGraph: 'Graph' = rightGraph if rightGraph else Graph(modGraph=rule.right)
+        self._leftGraph: Graph = leftGraph if leftGraph else Graph(rule.left)
+        self._rightGraph: Graph = rightGraph if rightGraph else Graph(rule.right)
 
         self._mod_rule: mod.Rule = rule if rule else self.set_mod_rule()
 
@@ -207,8 +207,8 @@ class Reaction:
         core_right_graph.add_edges_from(core_right_edges)
                     
 
-        new_left_graph = Graph(nxGraph=core_left_graph)
-        new_right_graph = Graph(nxGraph=core_right_graph)
+        new_left_graph = Graph(core_left_graph)
+        new_right_graph = Graph(core_right_graph)
         return Reaction(leftGraph=new_left_graph, rightGraph=new_right_graph, isMinimal=True, name=(str(self._name)+"_min"))
 
     @property
