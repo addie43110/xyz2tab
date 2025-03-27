@@ -121,7 +121,6 @@ def read_peakfrags(qcxsm2_dir):
             line = f.readline()
             tokens = line.split()
             if len(tokens) != 3:
-                print(red("ERROR: allpeaks.dat line malformed. skipping."))
                 continue
             (frag_name, _, intensity) = tokens
             print(f"read: {frag_name}")
@@ -153,9 +152,7 @@ def read_allfrags(args, qcxsm2_dir=".", initial_pname="unnamed"):
                     update_parent = False
             if frag_type=='isomer':
                 path_to_fragment = f"{qcxsm2_dir}/{dire}/isomer.xyz"
-                where_to_write_gml = f"./all_fragments/{dire}"
-                where_to_write_rule = f"./rules/{parent_name}_{dire}.gml"
-                read_fragment(args, path_to_fragment, where_to_write_gml, where_to_write_rule, parent_graph, parent_name)
+                read_fragment(args, path_to_fragment, dire, parent_graph, parent_name, peak_dict)
                 f.readline() # skip next line
 
             elif frag_type=='fragmentpair':
@@ -163,27 +160,20 @@ def read_allfrags(args, qcxsm2_dir=".", initial_pname="unnamed"):
                 [frag2_dir, _, _, _] = f.readline().split()
 
                 ptf = [f"{qcxsm2_dir}/{d}/fragment.xyz" for d in [frag1_dir, frag2_dir]]
-                wtwg = [f"./all_fragments/{d}" for d in [frag1_dir, frag2_dir]]
-                wtwr = [f"./rules/{parent_name}_{d}.gml" for d in [frag1_dir, frag2_dir]]
-
-                read_fragment(args, ptf[0], wtwg[0], wtwr[0], parent_graph, parent_name)
-                read_fragment(args, ptf[1], wtwg[1], wtwr[1], parent_graph, parent_name)
+                read_fragment(args, ptf[0], frag1_dir, parent_graph, parent_name, peak_dict)
+                read_fragment(args, ptf[1], frag2_dir, parent_graph, parent_name, peak_dict)
 
             elif frag_type=='fragment_type':
                 update_parent = True
 
-def read_fragment(args, path_to_fragment, where_to_write_gml, where_to_write_rule, parent_graph, parent_name):
-    """ try:
-        pt = PrintTab(args, path_to_fragment)
-    except Exception as e:
-        print(f"Encountered malformed .xyz file at {path_to_fragment}. Skipping.")
-        print(e)
-        return """
+def read_fragment(args, path_to_fragment, frag_name, parent_graph, parent_name, peak_dict):
     pt = PrintTab(args, path_to_fragment)
-    child_graph = write_gml_file(pt, where_to_write_gml)
-    if child_graph and parent_graph:
-        rule_gml_string = Reaction(leftGraph=parent_graph, rightGraph=child_graph, name=where_to_write_rule[8:-4]).to_ruleGML_string()
-        write_gml_string(rule_gml_string, where_to_write_rule)
+    child_graph = write_gml_file(pt, f"./all_fragments/{frag_name}")
+    if peak_dict[frag_name] >= 1:
+        write_gml_file(pt, f"./peak_fragments/{frag_name}")
+    if child_graph and parent_graph and peak_dict[frag_name] >= 1:
+        rule_gml_string = Reaction(leftGraph=parent_graph, rightGraph=child_graph, name={parent_name}_{frag_name}).to_ruleGML_string()
+        write_gml_string(rule_gml_string, f"./rules/{parent_name}_{frag_name}")
 
 def main():
     args = parse_args()
