@@ -5,13 +5,24 @@ import time
 from prettify import red, warn
 
 # each vertex has attribute "label" which stores string label
-# each edge has attribute "bond" which stores bond type (-, =, etc.)
+# each edge has attribute "bond" which stores bond order (-, =, etc.)
 
 class Graph:
-    def __init__(self, nxGraph=None, modGraph: mod.Graph=None, verbose=False):
+    def __init__(self, graph, verbose=False):
         self._verbose = verbose
-        self._mod_graph = modGraph if modGraph else self.nx_graph_to_mod(nxGraph)
-        self._nx_graph = nxGraph if nxGraph else self.mod_to_nx_graph(modGraph)
+        
+        if isinstance(graph, mod.Graph):
+            self._mod_graph = graph
+            self._nx_graph = self.mod_to_nx_graph(graph)
+            self._gml_string = self.nx_graph_to_GML_string(self._nx_graph)
+        elif isinstance(graph, nx.Graph):
+            self._nx_graph = graph
+            self._mod_graph = self.nx_graph_to_mod(graph)
+            self._gml_string = self.nx_graph_to_GML_string(self._nx_graph)
+        elif isinstance(graph, str):
+            self._gml_string = graph
+            self._nx_graph = self.GML_to_nx_graph(self._gml_string)
+            self._mod_graph = self.nx_graph_to_mod(self._nx_graph)
 
     
     def mod_to_nx_graph(self, modGraph: mod.Graph):
@@ -33,6 +44,18 @@ class Graph:
                 print(warn("Error converting nxGraph to mod graph. Likely graph is not connected. This will not affect rule generation."))
             return None
 
+    def GML_to_nx_graph(self, gml_string):
+        g = nx.Graph()
+        lines = gml_string.split("\n")
+        for line in lines:
+            tokens = line.split()
+            if tokens[0] == "node":
+                (_,_,_, mid, _, l, _) = tokens
+                g.add_node(int(mid), label=l, modID=int(mid))
+            elif tokens[0] == "edge":
+                (_, _, _, u, _, v, _, bondOrder, _ ) = tokens
+                g.add_edge(int(u), int(v), bond=bondOrder)
+        return g
 
     def nx_graph_to_GML_string(self, nxGraph):
         out = []
@@ -54,6 +77,10 @@ class Graph:
     def mod_graph(self):
         return self._mod_graph
 
+    @property  
+    def gml_string(self):
+        return self._gml_string
+
     @property
     def edges(self):
         return self._nx_graph.edges
@@ -66,7 +93,7 @@ class Graph:
         self._mod_graph.print()
 
     def __str__(self) -> str:
-        return self.nx_graph_to_GML_string(self.nx_graph)
+        return self._gml_string
 
     def __hash__(self) -> int:
-        return hash(self.nx_graph_to_GML_string(self.nx_graph))
+        return hash(self._gml_string)
