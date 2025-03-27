@@ -85,7 +85,8 @@ def write_gml_file(pt, filename="unnamed") -> Graph:
         mod_graph = mod.Graph.fromGMLString(gml_string)
         g = Graph(mod_graph)
     except mod.libpymod.InputError:
-        print(f"Error trying to write {filename}.gml. Likely graph is not connected or no edges found.")
+        pass
+        # print(f"Error trying to write {filename}.gml. Likely graph is not connected or no edges found.")
 
     with open(f"{filename}.gml", 'w') as file:
         file.write(gml_string)
