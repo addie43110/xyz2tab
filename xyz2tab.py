@@ -172,7 +172,7 @@ def read_fragment(args, path_to_fragment, frag_name, parent_graph, parent_name, 
     if peak_dict[frag_name] >= 1:
         write_gml_file(pt, f"./peak_fragments/{frag_name}")
     if child_graph and parent_graph and peak_dict[frag_name] >= 1:
-        rule_gml_string = Reaction(leftGraph=parent_graph, rightGraph=child_graph, name={parent_name}_{frag_name}).to_ruleGML_string()
+        rule_gml_string = Reaction(leftGraph=parent_graph, rightGraph=child_graph, name=f"{parent_name}_{frag_name}").to_ruleGML_string()
         write_gml_string(rule_gml_string, f"./rules/{parent_name}_{frag_name}")
 
 def main():
