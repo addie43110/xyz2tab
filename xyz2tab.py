@@ -109,8 +109,8 @@ def updateParent(parent_dir):
         parent_graph = mod.Graph.fromGMLFile(f"./all_fragments/{parent_dir}.gml")
     except:
         print(f"Parent fragment {parent_dir} not found. Omitting rules with direct children.")
-        print(f"Printing contents of {parent_dir}...")
-        print(s)
+        # print(f"Printing contents of {parent_dir}...")
+        # print(s)
         return (None, None)
     parent_graph = Graph(parent_graph)
     return (parent_graph, parent_dir)
