@@ -123,7 +123,6 @@ def read_peakfrags(qcxsm2_dir):
             if len(tokens) != 3:
                 continue
             (frag_name, _, intensity) = tokens
-            print(f"read: {frag_name}")
             peak_dict[frag_name] = float(intensity)
     return peak_dict
 
