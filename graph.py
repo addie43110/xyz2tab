@@ -51,10 +51,10 @@ class Graph:
             tokens = line.split()
             if tokens[0] == "node":
                 (_,_,_, mid, _, l, _) = tokens
-                g.add_node(int(mid), label=l, modID=int(mid))
+                g.add_node(int(mid), label=l[1:-1], modID=int(mid))
             elif tokens[0] == "edge":
                 (_, _, _, u, _, v, _, bondOrder, _ ) = tokens
-                g.add_edge(int(u), int(v), bond=bondOrder)
+                g.add_edge(int(u), int(v), bond=bondOrder[1:-1])
         return g
 
     def nx_graph_to_GML_string(self, nxGraph):
