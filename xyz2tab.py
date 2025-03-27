@@ -103,12 +103,16 @@ def make_exist_dir(dir_path):
             f.unlink()
 
 def updateParent(parent_dir):
+    with open(f"./all_fragments/{parent_dir}.gml") as f:
+        s = f.read()
     try:
         parent_graph = mod.Graph.fromGMLFile(f"./all_fragments/{parent_dir}.gml")
     except:
         print(f"Parent fragment {parent_dir} not found. Omitting rules with direct children.")
+        print(f"Printing contents of {parent_dir}...")
+        print(s)
         return (None, None)
-    parent_graph = Graph(modGraph=parent_graph)
+    parent_graph = Graph(parent_graph)
     return (parent_graph, parent_dir)
 
 def read_peakfrags(qcxsm2_dir):
