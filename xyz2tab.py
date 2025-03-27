@@ -103,6 +103,7 @@ def make_exist_dir(dir_path):
             f.unlink()
 
 def updateParent(directory):
+    print(f"directory: {directory}")
     try:
         parent_graph = mod.Graph.fromGMLFile(f"./all_fragments/{parent_filename}.gml")
     except:
