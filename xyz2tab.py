@@ -21,6 +21,7 @@ from reaction import Reaction
 from lookup_tables import avg_bond_lengths
 from helpers import parse_args
 from print_tables import PrintTab
+from prettify import red, warn, green, blue
 # from create_plots import CreatePlot
 
 #pd.set_option("display.max_rows", None, "display.max_columns", None)
@@ -111,18 +112,34 @@ def updateParent(directory):
     parent_name = parent_filename
     return (parent_graph, parent_name)
 
+def read_peakfrags(qcxsm2_dir):
+    peak_dict = {}
+    with open(f"{qcxsm2_dir}/allpeaks.dat") as f:
+        f.readline()
+        line = f.readline() # discard two headers
+        while line:
+            line = f.readline()
+            tokens = line.split()
+            if len(tokens) != 3:
+                print(red("ERROR: allpeaks.dat line malformed. skipping."))
+                continue
+            (frag_name, _, intensity) = tokens
+            peak_dict[frag_name] = float(intensity)
+    return peak_dict
 
-def read_allfrags(args, allfrags_dir=".", initial_pname="unnamed"):
+def read_allfrags(args, qcxsm2_dir=".", initial_pname="unnamed"):
+    peak_dict = read_peakfrags(qcxsm2_dir)
+
     make_exist_dir("./all_fragments")
     make_exist_dir("./peak_fragments")
     make_exist_dir("./rules")
 
     parent_name=initial_pname
-    pt_start = PrintTab(args, f"{allfrags_dir}/in.xyz")
+    pt_start = PrintTab(args, f"{qcxsm2_dir}/in.xyz")
     parent_graph = write_gml_file(pt_start, f"./all_fragments/{initial_pname}")
     update_parent = False
 
-    with open(f"{allfrags_dir}/allfragments") as f:
+    with open(f"{qcxsm2_dir}/allfragments") as f:
         line = f.readline() # discard header
         while line:
             line = f.readline()
@@ -134,7 +151,7 @@ def read_allfrags(args, allfrags_dir=".", initial_pname="unnamed"):
                     (parent_graph, parent_name) = updateParent(dire)
                     update_parent = False
             if frag_type=='isomer':
-                path_to_fragment = f"{allfrags_dir}/{dire}/isomer.xyz"
+                path_to_fragment = f"{qcxsm2_dir}/{dire}/isomer.xyz"
                 where_to_write_gml = f"./all_fragments/{dire}"
                 where_to_write_rule = f"./rules/{parent_name}_{dire}.gml"
                 read_fragment(args, path_to_fragment, where_to_write_gml, where_to_write_rule, parent_graph, parent_name)
@@ -144,7 +161,7 @@ def read_allfrags(args, allfrags_dir=".", initial_pname="unnamed"):
                 [frag1_dir, _, _, _] = f.readline().split()
                 [frag2_dir, _, _, _] = f.readline().split()
 
-                ptf = [f"{allfrags_dir}/{d}/fragment.xyz" for d in [frag1_dir, frag2_dir]]
+                ptf = [f"{qcxsm2_dir}/{d}/fragment.xyz" for d in [frag1_dir, frag2_dir]]
                 wtwg = [f"./all_fragments/{d}" for d in [frag1_dir, frag2_dir]]
                 wtwr = [f"./rules/{parent_name}_{d}.gml" for d in [frag1_dir, frag2_dir]]
 
