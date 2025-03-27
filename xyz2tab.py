@@ -79,7 +79,7 @@ def write_gml_file(pt, filename="unnamed") -> Graph:
         element = pt.xyz_df.iloc[0]['element']
         gml_string = f"graph [\n\tnode [ id 0 label {element} ]\n]"
 
-   g = Graph(gml_string)
+    g = Graph(gml_string)
 
     try:
         mod_graph = mod.Graph.fromGMLString(gml_string)
