@@ -113,13 +113,13 @@ def updateParent(directory):
 
 
 def read_allfrags(args, allfrags_dir=".", initial_pname="unnamed"):
-    make_exist_dir("./iso_fragments")
-    make_exist_dir("./pair_fragments")
+    make_exist_dir("./all_fragments")
+    make_exist_dir("./peak_fragments")
     make_exist_dir("./rules")
 
     parent_name=initial_pname
     pt_start = PrintTab(args, f"{allfrags_dir}/in.xyz")
-    parent_graph = write_gml_file(pt_start, f"./iso_fragments/{initial_pname}")
+    parent_graph = write_gml_file(pt_start, f"./all_fragments/{initial_pname}")
     update_parent = False
 
     with open(f"{allfrags_dir}/allfragments") as f:
@@ -135,7 +135,7 @@ def read_allfrags(args, allfrags_dir=".", initial_pname="unnamed"):
                     update_parent = False
             if frag_type=='isomer':
                 path_to_fragment = f"{allfrags_dir}/{dire}/isomer.xyz"
-                where_to_write_gml = f"./iso_fragments/{dire}"
+                where_to_write_gml = f"./all_fragments/{dire}"
                 where_to_write_rule = f"./rules/{parent_name}_{dire}.gml"
                 read_fragment(args, path_to_fragment, where_to_write_gml, where_to_write_rule, parent_graph, parent_name)
                 f.readline() # skip next line
@@ -145,7 +145,7 @@ def read_allfrags(args, allfrags_dir=".", initial_pname="unnamed"):
                 [frag2_dir, _, _, _] = f.readline().split()
 
                 ptf = [f"{allfrags_dir}/{d}/fragment.xyz" for d in [frag1_dir, frag2_dir]]
-                wtwg = [f"./pair_fragments/{d}" for d in [frag1_dir, frag2_dir]]
+                wtwg = [f"./all_fragments/{d}" for d in [frag1_dir, frag2_dir]]
                 wtwr = [f"./rules/{parent_name}_{d}.gml" for d in [frag1_dir, frag2_dir]]
 
                 read_fragment(args, ptf[0], wtwg[0], wtwr[0], parent_graph, parent_name)
