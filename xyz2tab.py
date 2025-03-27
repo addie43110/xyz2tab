@@ -190,7 +190,7 @@ def main():
     #for windows console
     sys.stdout.reconfigure(encoding='utf-8')  
 
-    read_allfrags(args, allfrags_dir=args.allfrags_dir[:-1], initial_pname=args.name)
+    read_allfrags(args, qcxsm2_dir=args.allfrags_dir[:-1], initial_pname=args.name)
     
 
 if __name__=="__main__":
