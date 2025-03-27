@@ -102,16 +102,14 @@ def make_exist_dir(dir_path):
         if f.is_file():
             f.unlink()
 
-def updateParent(directory):
-    print(f"directory: {directory}")
+def updateParent(parent_dir):
     try:
-        parent_graph = mod.Graph.fromGMLFile(f"./all_fragments/{parent_filename}.gml")
+        parent_graph = mod.Graph.fromGMLFile(f"./all_fragments/{parent_dir}.gml")
     except:
-        print(f"Parent fragment {parent_filename} not found. Omitting rules with direct children.")
+        print(f"Parent fragment {parent_dir} not found. Omitting rules with direct children.")
         return (None, None)
     parent_graph = Graph(modGraph=parent_graph)
-    parent_name = parent_filename
-    return (parent_graph, parent_name)
+    return (parent_graph, parent_dir)
 
 def read_peakfrags(qcxsm2_dir):
     peak_dict = {}
