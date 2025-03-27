@@ -124,6 +124,7 @@ def read_peakfrags(qcxsm2_dir):
                 print(red("ERROR: allpeaks.dat line malformed. skipping."))
                 continue
             (frag_name, _, intensity) = tokens
+            print(f"read: {frag_name}")
             peak_dict[frag_name] = float(intensity)
     return peak_dict
 
