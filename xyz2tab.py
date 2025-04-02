@@ -70,31 +70,6 @@ def table_to_gml(table):
     lines.append("]")
     return "\n".join(lines)
 
-# returns [Graph] of the gml file(s) written
-def write_gml_file(pt, filename="unnamed") -> Graph:
-    if pt.has_bond_table:
-        bond_table = pt.bond_table
-        classification = [classify_bond(x,y) for (x,y) in zip(bond_table['A-B'], bond_table['distance_calc'])]
-        gml_string = table_to_gml(classification)
-    else: #there is only a single atom, so could not make any bond information
-        element = pt.xyz_df.iloc[0]['element']
-        gml_string = f"graph [\n\tnode [ id 0 label {element} ]\n]"
-
-    g = Graph(gml_string)
-    ccps = g.connected_components
-
-    if len(ccps)==1: #isomer
-        with open(f"{filename}.gml", 'w') as file:
-            file.write(gml_string)
-    elif len(ccps)==2: # pair fragments
-        frag_suffixes = ["f1", "f2"]
-        for fs, cmp in zip(frag_suffixes, ccps):
-            with open(f"{filename}{fs}.gml", 'w') as file:
-                file.write(str(cmp))
-    else:
-        print(red(f"ERROR: file {filename} contains more than 2 fragments. Not writing gml files."))
-    return ccps
-
 # general write gml string (graph or rule)
 def write_gml_string(gml_string, filename="./unamed.gml"):
     with open(f"{filename}", 'w') as file:
@@ -150,8 +125,8 @@ def read_allfrags(args, qcxsm2_dir=".", initial_pname="unnamed"):
     make_exist_dir("./rules")
 
     parent_name=initial_pname
-    pt_start = PrintTab(args, f"{qcxsm2_dir}/in.xyz")
-    parent_graph = write_gml_file(pt_start, f"./all_fragments/{initial_pname}")
+    parent_gml = pt_to_gml(args, f"{qcxsm2_dir}/in.xyz")
+    parent_graph = Graph(parent_gml)
     update_parent = False
 
     with open(f"{qcxsm2_dir}/allfragments") as f:
@@ -186,7 +161,7 @@ def read_allfrags(args, qcxsm2_dir=".", initial_pname="unnamed"):
             elif frag_type=='fragment_type':
                 update_parent = True
 
-def read_fragment(args, path_to_fragment, frag_name, parent_graph, parent_name, peak_dict):
+def pt_to_gml(args, path_to_fragment):
     pt = PrintTab(args, path_to_fragment)
     if pt.has_bond_table:
         bond_table = pt.bond_table
@@ -195,7 +170,11 @@ def read_fragment(args, path_to_fragment, frag_name, parent_graph, parent_name, 
     else: #there is only a single atom, so could not make any bond information
         element = pt.xyz_df.iloc[0]['element']
         gml_string = f"graph [\n\tnode [ id 0 label {element} ]\n]"
+    return gml_string
+    
 
+def read_fragment(args, path_to_fragment, frag_name, parent_graph, parent_name, peak_dict):
+    gml_string = pt_to_gml(args, path_to_fragment)
     g = Graph(gml_string)
     ccps = g.connected_components
 
