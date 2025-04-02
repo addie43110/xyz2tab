@@ -11,17 +11,32 @@ class Graph:
     def __init__(self, graph, verbose=False):
         self._verbose = verbose
         
-        if isinstance(graph, mod.Graph):
+        mod_lg_class = mod.libpymod.Rule.LeftGraph
+        mod_rg_class = mod.libpymod.Rule.RightGraph
+        update_mod = True
+        if isinstance(graph, mod_lg_class) or isinstance(graph, mod_rg_class):
             self._mod_graph = graph
             self._nx_graph = self.mod_to_nx_graph(graph)
             self._gml_string = self.nx_graph_to_GML_string(self._nx_graph)
+            update_mod = False
         elif isinstance(graph, nx.Graph):
             self._nx_graph = graph
-            self._mod_graph = self.nx_graph_to_mod(graph)
             self._gml_string = self.nx_graph_to_GML_string(self._nx_graph)
         elif isinstance(graph, str):
             self._gml_string = graph
             self._nx_graph = self.GML_to_nx_graph(self._gml_string)
+        else:
+            print(red(f"ERROR: Graph class cannot identify graph type in constructor: {type(graph)}"))
+
+        # up to the caller to check the number of components created
+        ccs = [self._nx_graph.subgraph(c).copy() for c in nx.connected_components(self._nx_graph)]
+        self._num_components = len(ccs)
+        if self._num_components > 1:
+            self._components = [Graph(c) for c in ccs]
+        else:
+            self._components = [self]
+
+        if self._num_components == 1 and update_mod:
             self._mod_graph = self.nx_graph_to_mod(self._nx_graph)
 
     
@@ -88,6 +103,14 @@ class Graph:
     @property
     def nodes(self):
         return self._nx_graph.nodes
+
+    @property
+    def num_components(self):
+        return self._num_components
+
+    @property
+    def connected_components(self):
+        return self._components
 
     def mod_print(self):
         self._mod_graph.print()

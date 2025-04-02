@@ -4,23 +4,42 @@ import networkx as nx
 from mod import BondType
 from graph import Graph
 from prettify import header, blue, green, red, warn, bold, underline
-from typing import Dict
+from typing import Dict, List
 
 class Reaction:
     '''
     Can either call constructor with Reaction(leftGraph, rightGraph) or 
                                      Reaction(rule) (where rule is type mod.Rule)
     '''
-    def __init__(self, rule=None, leftGraph=None, rightGraph=None, isMinimal=False, name="no name"):
+    def __init__(self, rule=None, educts=None, products=None, isMinimal=False, name="no name", context=0):
         self._name: str = rule.name if rule else name
-        self._leftGraph: Graph = leftGraph if leftGraph else Graph(rule.left)
-        self._rightGraph: Graph = rightGraph if rightGraph else Graph(rule.right)
+
+        if educts and products:
+            self._educts = educts
+            self._products = products
+        else:
+            self._educts: List[Graph] = Graph(rule.left).connected_components
+            self._products: List[Graph] = Graph(rule.right).connected_components
+
+        if len(self._educts) == 1:
+            self._leftGraph = self._educts[0]
+        else:
+            g = nx.Graph()
+            [g.update(s.nx_graph) for s in self._educts]
+            self._leftGraph = Graph(g)
+
+        if len(self._products) == 1:
+            self._rightGraph = self._products[0]
+        else:
+            g = nx.Graph()
+            [g.update(s.nx_graph) for s in self._products]
+            self._rightGraph = Graph(g)
 
         self._mod_rule: mod.Rule = rule if rule else self.set_mod_rule()
 
         self._is_minimal: bool = isMinimal
         self._maximum_subrule: Reaction = self
-        self._minimum_subrule: Reaction = self if isMinimal else self.set_minimum_subrule(add_context=3)
+        self._minimum_subrule: Reaction = self if isMinimal else self.set_minimum_subrule(add_context=int(context))
 
     def set_mod_rule(self):
         return mod.ruleGMLString(self.to_ruleGML_string(get_from_mod=False))
@@ -209,7 +228,8 @@ class Reaction:
 
         new_left_graph = Graph(core_left_graph)
         new_right_graph = Graph(core_right_graph)
-        return Reaction(leftGraph=new_left_graph, rightGraph=new_right_graph, isMinimal=True, name=(str(self._name)+"_min"))
+
+        return Reaction(educts=new_left_graph.connected_components, products=new_right_graph.connected_components, isMinimal=True, name=(str(self._name)+"_min"))
 
     @property
     def minimum_subrule(self):
@@ -222,6 +242,14 @@ class Reaction:
     @property
     def mod_rule(self):
         return self._mod_rule
+
+    @property
+    def educts(self):
+        return self._educts
+
+    @property
+    def products(self):
+        return self._products
 
     @property
     def left_graph(self):
