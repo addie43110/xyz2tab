@@ -26,6 +26,7 @@ from prettify import red, warn, green, blue
 
 #pd.set_option("display.max_rows", None, "display.max_columns", None)
 
+# Classifies bond order based on bond length
 def classify_bond(pair, bond_length):
     [atom1, atom2] = pair.split("–")
 
@@ -42,7 +43,7 @@ def classify_bond(pair, bond_length):
         bond_key = atom2_label + "-" + atom1_label
 
     bond_length_dict = avg_bond_lengths[bond_key]
-    closest = 'single'
+    closest = list(bond_length_dict.keys())[0]
     for (order, length) in bond_length_dict.items():
         length_diff = abs(bond_length - float(length))
         if length_diff < abs(bond_length_dict[closest] - bond_length):
@@ -53,7 +54,7 @@ def classify_bond(pair, bond_length):
 # table of type: 
 # atom1 label, atom1 id, atom2 label, atom2 id, bond order
 def table_to_gml(table):
-    gml_bond_char = {'single': '-', 'double':'=', 'triple':'#'}
+    gml_bond_char = {'single': '-', 'double':'=', 'triple':'#', 'aromatic':':'}
     lines = ["graph ["]
     nodes = []
     for (atom1_label, atom1_id, atom2_label, atom2_id, order) in table:
@@ -69,7 +70,7 @@ def table_to_gml(table):
     lines.append("]")
     return "\n".join(lines)
 
-# returns Graph object of the gml file written
+# returns [Graph] of the gml file(s) written
 def write_gml_file(pt, filename="unnamed") -> Graph:
     if pt.has_bond_table:
         bond_table = pt.bond_table
@@ -80,18 +81,21 @@ def write_gml_file(pt, filename="unnamed") -> Graph:
         gml_string = f"graph [\n\tnode [ id 0 label {element} ]\n]"
 
     g = Graph(gml_string)
+    ccps = g.connected_components
 
-    try:
-        mod_graph = mod.Graph.fromGMLString(gml_string)
-        g = Graph(mod_graph)
-    except mod.libpymod.InputError:
-        pass
-        # print(f"Error trying to write {filename}.gml. Likely graph is not connected or no edges found.")
+    if len(ccps)==1: #isomer
+        with open(f"{filename}.gml", 'w') as file:
+            file.write(gml_string)
+    elif len(ccps)==2: # pair fragments
+        frag_suffixes = ["f1", "f2"]
+        for fs, cmp in zip(frag_suffixes, ccps):
+            with open(f"{filename}{fs}.gml", 'w') as file:
+                file.write(str(cmp))
+    else:
+        print(red(f"ERROR: file {filename} contains more than 2 fragments. Not writing gml files."))
+    return ccps
 
-    with open(f"{filename}.gml", 'w') as file:
-        file.write(gml_string)
-    return g
-
+# general write gml string (graph or rule)
 def write_gml_string(gml_string, filename="./unamed.gml"):
     with open(f"{filename}", 'w') as file:
         file.write(gml_string)
@@ -102,6 +106,12 @@ def make_exist_dir(dir_path):
         if f.is_file():
             f.unlink()
 
+""" directory is a string given by QCxMS2 to identify fragments.
+    For example: p1p15 is the 15th product of fragmentation of p1
+                 p11f1 is the first fragment of p11 (p11 is a pair of fragments)
+    Regex is used to determine the parent product.
+    In the first example, p1 is the parent product.
+    In the second example, the original molecule is the parent. """
 def updateParent(directory):
     match = re.match(r"^(\w*)([pf]\d+)(?:p\d+)(?:f\d+)?$", directory)
     parent_filename = match.group(1)+match.group(2)
@@ -115,6 +125,9 @@ def updateParent(directory):
     parent_graph = Graph(parent_graph)
     return (parent_graph, parent_filename)
 
+""" Opens the file 'allpeaks.dat' found in the root directory of the 
+    QCxMS2 data. Creates a dictionary where keys are the fragment name
+    and values are the intensity of the peak. """
 def read_peakfrags(qcxsm2_dir):
     peak_dict = {}
     with open(f"{qcxsm2_dir}/allpeaks.dat") as f:
@@ -158,23 +171,53 @@ def read_allfrags(args, qcxsm2_dir=".", initial_pname="unnamed"):
                 f.readline() # skip next line
 
             elif frag_type=='fragmentpair':
-                [frag1_dir, _, _, _] = f.readline().split()
+                path_to_pair = f"{qcxsm2_dir}/{dire}/pair.xyz"
+                read_fragment(args, path_to_pair, dire, parent_graph, parent_name, peak_dict)
+                f.readline()
+                f.readline() # skip next two lines
+
+                """ [frag1_dir, _, _, _] = f.readline().split()
                 [frag2_dir, _, _, _] = f.readline().split()
 
                 ptf = [f"{qcxsm2_dir}/{d}/fragment.xyz" for d in [frag1_dir, frag2_dir]]
                 read_fragment(args, ptf[0], frag1_dir, parent_graph, parent_name, peak_dict)
-                read_fragment(args, ptf[1], frag2_dir, parent_graph, parent_name, peak_dict)
+                read_fragment(args, ptf[1], frag2_dir, parent_graph, parent_name, peak_dict) """
 
             elif frag_type=='fragment_type':
                 update_parent = True
 
 def read_fragment(args, path_to_fragment, frag_name, parent_graph, parent_name, peak_dict):
     pt = PrintTab(args, path_to_fragment)
-    child_graph = write_gml_file(pt, f"./all_fragments/{frag_name}")
-    if peak_dict[frag_name] >= 1:
-        write_gml_file(pt, f"./peak_fragments/{frag_name}")
-    if child_graph and parent_graph and peak_dict[frag_name] >= 1:
-        rule_gml_string = Reaction(leftGraph=parent_graph, rightGraph=child_graph, name=f"{parent_name}_{frag_name}").to_ruleGML_string()
+    if pt.has_bond_table:
+        bond_table = pt.bond_table
+        classification = [classify_bond(x,y) for (x,y) in zip(bond_table['A-B'], bond_table['distance_calc'])]
+        gml_string = table_to_gml(classification)
+    else: #there is only a single atom, so could not make any bond information
+        element = pt.xyz_df.iloc[0]['element']
+        gml_string = f"graph [\n\tnode [ id 0 label {element} ]\n]"
+
+    g = Graph(gml_string)
+    ccps = g.connected_components
+
+    is_peak = False
+    if len(ccps)==1: #isomer
+        write_gml_string(gml_string, f"./all_fragments/{frag_name}")
+        if peak_dict[frag_name] >= 1:
+            write_gml_string(gml_string, f"./peak_fragments/{frag_name}")
+            is_peak = True
+    elif len(ccps)==2: # pair fragments
+        frag_suffixes = ["f1", "f2"]
+        for fs, cmp in zip(frag_suffixes, ccps):
+            write_gml_string(str(cmp), f"./all_fragments/{frag_name}{fs}")
+            if peak_dict[f"{frag_name}{fs}"] >= 1:
+                write_gml_string(str(cmp), f"./peak_fragments/{frag_name}{fs}")
+                is_peak = True
+                rule_gml_string = Reaction(educts=[parent_graph], products=ccps, name=f"{parent_name}!!{frag_name}")
+    else:
+        print(red(f"ERROR: file {filename} contains more than 2 fragments. Not writing gml files."))
+
+    if parent_graph and is_peak:
+        rule_gml_string = Reaction(educts=[parent_graph], products=ccps, name=f"{parent_name}!!{frag_name}")
         write_gml_string(rule_gml_string, f"./rules/{parent_name}_{frag_name}")
 
 def main():

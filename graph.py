@@ -30,6 +30,7 @@ class Graph:
 
         # up to the caller to check the number of components created
         ccs = [self._nx_graph.subgraph(c).copy() for c in nx.connected_components(self._nx_graph)]
+        ccs = sorted(ccs, key=len, reverse=True)
         self._num_components = len(ccs)
         if self._num_components > 1:
             self._components = [Graph(c) for c in ccs]
