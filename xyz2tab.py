@@ -68,7 +68,8 @@ def table_to_gml(table, pt=None):
         lines.append(f"\tedge [ source {atom1_id} target {atom2_id} label \"{gml_bond_char[order]}\" ]")
 
     if pt.num_atoms > len(nodes):
-        print(f"atom1_idx: {pt.xyz_df['atom1_idx']}")
+        for atom_idx in pt.xyz_df['atom1_idx']:
+            print(f"atom_idx: {atom_idx}")
     lines.append("]")
     return "\n".join(lines)
 
@@ -121,7 +122,6 @@ def read_peakfrags(qcxsm2_dir):
 
 def read_allfrags(args, qcxsm2_dir=".", initial_pname="unnamed"):
     peak_dict = read_peakfrags(qcxsm2_dir)
-    print(f"peak_dict keys: {list(peak_dict.keys())}")
 
     make_exist_dir("./all_fragments")
     make_exist_dir("./peak_fragments")
@@ -168,9 +168,6 @@ def pt_to_gml(args, path_to_fragment):
     pt = PrintTab(args, path_to_fragment)
     if pt.has_bond_table:
         bond_table = pt.bond_table
-        if "p8" in path_to_fragment:
-            pt.print_sel_dist_table()
-            print(f"path_to_fragment: {path_to_fragment}")
         classification = [classify_bond(x,y) for (x,y) in zip(bond_table['A-B'], bond_table['distance_calc'])]
         gml_string = table_to_gml(classification, pt)
         if "p8" in path_to_fragment:
