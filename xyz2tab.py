@@ -119,6 +119,7 @@ def read_peakfrags(qcxsm2_dir):
 
 def read_allfrags(args, qcxsm2_dir=".", initial_pname="unnamed"):
     peak_dict = read_peakfrags(qcxsm2_dir)
+    print(f"peak_dict keys: {list(peak_dict.keys())}")
 
     make_exist_dir("./all_fragments")
     make_exist_dir("./peak_fragments")
