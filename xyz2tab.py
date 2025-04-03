@@ -176,6 +176,7 @@ def pt_to_gml(args, path_to_fragment):
         classification = [classify_bond(x,y) for (x,y) in zip(bond_table['A-B'], bond_table['distance_calc'])]
         gml_string = table_to_gml(classification, pt)
         if "p1f1p6" in path_to_fragment:
+            pt.print_sel_dist_table()
             print(gml_string)
     else: #there is only a single atom, so could not make any bond information
         element = pt.xyz_df.iloc[0]['element']
