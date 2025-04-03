@@ -175,8 +175,6 @@ def pt_to_gml(args, path_to_fragment):
         bond_table = pt.bond_table
         classification = [classify_bond(x,y) for (x,y) in zip(bond_table['A-B'], bond_table['distance_calc'])]
         gml_string = table_to_gml(classification, pt)
-        if "p8" in path_to_fragment:
-            print(gml_string)
     else: #there is only a single atom, so could not make any bond information
         element = pt.xyz_df.iloc[0]['element']
         gml_string = f"graph [\n\tnode [ id 0 label {element} ]\n]"
