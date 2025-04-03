@@ -68,8 +68,13 @@ def table_to_gml(table, pt=None):
         lines.append(f"\tedge [ source {atom1_id} target {atom2_id} label \"{gml_bond_char[order]}\" ]")
 
     if pt.num_atoms > len(nodes):
+        lines.append("")
         for atom_idx in pt.xyz_df['atom1_idx']:
-            print(f"atom_idx: {atom_idx}")
+            m = re.match(r"([a-zA-Z]+)(\d+)", atom_idx)
+            atom_label = m.group(1)
+            atom_id = m.group(2)
+            if atom_id not in nodes:
+                lines.append(f"\tnode [ id {atom_id} label \"{atom_label}\" ]")
     lines.append("]")
     return "\n".join(lines)
 
