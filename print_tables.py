@@ -509,7 +509,7 @@ class PrintTab:
                         ['Included contacts :', re.sub(r'[^a-zA-Z0-9,]','',str(self._args.includeCon))],
                         ['Covalent radius + :', '{:.2f} %'.format(self._args.radius)]],
                         tablefmt='simple'))
-
+    @property
     def num_atoms(self):
         xyz_df = self._xyz_df
         return xyz_df.shape[0]
