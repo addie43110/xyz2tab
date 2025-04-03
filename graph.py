@@ -29,6 +29,7 @@ class Graph:
             print(red(f"ERROR: Graph class cannot identify graph type in constructor: {type(graph)}"))
 
         # up to the caller to check the number of components created
+        print(f"components: {nx.connected_components(self._nx_graph)}")
         ccs = [self._nx_graph.subgraph(c).copy() for c in nx.connected_components(self._nx_graph)]
         ccs = sorted(ccs, key=len, reverse=True)
         self._num_components = len(ccs)
