@@ -201,7 +201,7 @@ def read_fragment(args, path_to_fragment, frag_name, parent_graph, parent_name, 
                 is_peak = True
                 rule_gml_string = Reaction(educts=[parent_graph], products=ccps, name=f"{parent_name}!!{frag_name}").to_ruleGML_string()
     else:
-        print(red(f"ERROR: file {filename} contains more than 2 fragments. Not writing gml files."))
+        print(red(f"ERROR: file {frag_name} contains more than 2 fragments. Not writing gml files."))
 
     if parent_graph and is_peak:
         rule_gml_string = Reaction(educts=[parent_graph], products=ccps, name=f"{parent_name}!!{frag_name}").to_ruleGML_string()
