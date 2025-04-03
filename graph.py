@@ -65,6 +65,8 @@ class Graph:
         lines = gml_string.split("\n")
         for line in lines:
             tokens = line.split()
+            if len(tokens) < 2:
+                continue
             if tokens[0] == "node":
                 (_,_,_, mid, _, l, _) = tokens
                 g.add_node(int(mid), label=l[1:-1], modID=int(mid))
