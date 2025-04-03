@@ -510,8 +510,12 @@ class PrintTab:
                         ['Covalent radius + :', '{:.2f} %'.format(self._args.radius)]],
                         tablefmt='simple'))
 
+    def num_atoms(self):
+        xyz_df = self._xyz_df
+        return xyz_df.shape[0]
+
     def print_info_table(self):
-        info_df = self.info_df
+        info_df = self._info_df
         print("\n", tabulate(info_df,
                     headers=['Element','Atom count','Mass fraction /%', 'Cov. radius /Å', 'Cov. radius + /Å'],
                     tablefmt='github',

@@ -53,7 +53,7 @@ def classify_bond(pair, bond_length):
 
 # table of type: 
 # atom1 label, atom1 id, atom2 label, atom2 id, bond order
-def table_to_gml(table):
+def table_to_gml(table, pt=None):
     gml_bond_char = {'single': '-', 'double':'=', 'triple':'#', 'aromatic':':'}
     lines = ["graph ["]
     nodes = []
@@ -67,6 +67,8 @@ def table_to_gml(table):
 
         lines.append(f"\tedge [ source {atom1_id} target {atom2_id} label \"{gml_bond_char[order]}\" ]")
 
+    if pt:
+        print(pt.xyz_df['Atoms'])
     lines.append("]")
     return "\n".join(lines)
 
@@ -170,7 +172,7 @@ def pt_to_gml(args, path_to_fragment):
             pt.print_sel_dist_table()
             print(f"path_to_fragment: {path_to_fragment}")
         classification = [classify_bond(x,y) for (x,y) in zip(bond_table['A-B'], bond_table['distance_calc'])]
-        gml_string = table_to_gml(classification)
+        gml_string = table_to_gml(classification, pt)
         if "p8" in path_to_fragment:
             print(gml_string)
     else: #there is only a single atom, so could not make any bond information
