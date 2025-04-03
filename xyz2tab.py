@@ -68,7 +68,7 @@ def table_to_gml(table, pt=None):
         lines.append(f"\tedge [ source {atom1_id} target {atom2_id} label \"{gml_bond_char[order]}\" ]")
 
     if pt:
-        print(pt.xyz_df['Atoms'])
+        print(pt.xyz_df['atom1_idx'])
     lines.append("]")
     return "\n".join(lines)
 
