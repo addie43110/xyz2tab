@@ -46,10 +46,10 @@ class Graph:
         g = nx.Graph()
 
         for v in modGraph.vertices:
-            g.add_node(v.id, label=v.stringLabel, modID=v.id)
+            g.add_node(int(v.id), label=str(v.stringLabel), modID=int(v.id))
 
         for e in modGraph.edges:
-            g.add_edge(e.source.id, e.target.id, bond=e.bondType)
+            g.add_edge(int(e.source.id), int(e.target.id), bond=str(e.bondType))
         
         return g
 
