@@ -60,7 +60,6 @@ class Reaction:
             only_left_nodes = [node for node in leftGraph.nodes if node not in shared_nodes and node not in label_changing_nodes]
 
             # EDGES
-            debug = self._name == "p1f1!!p1f1p7"
             shared_edges = []
             for (u, v, attrs1) in leftGraph.edges(data=True):
                 for (p,q,attrs2) in rightGraph.edges(data=True):
@@ -71,11 +70,6 @@ class Reaction:
             bond_changing_edges = []
             for (u,v,attrs) in leftGraph.edges(data=True):
                 for (p,q,attrs2) in rightGraph.edges(data=True):
-                    if debug:
-                        print(f"attrs['bond']: {attrs['bond']}")
-                        print(f"attrs2['bond']: {attrs2['bond']}")
-                        print(f"bond changes?: {red(attrs['bond']!=attrs2['bond'])}")
-                        print(f"bond types: {type(attrs['bond'])}, {type(attrs2['bond'])}\n")
                     if {u,v}=={p,q} and attrs['bond']!=attrs2['bond']:
                         bond_changing_edges.append({u,v})
             bond_changing_edges_list = [list(s) for s in bond_changing_edges]
@@ -92,11 +86,6 @@ class Reaction:
                     only_right_edges.append({u,v})
             only_right_edges_list = [list(s) for s in only_right_edges]
 
-            if debug:
-                print(f"shared_edges: {shared_edges_list}")
-                print(f"bond_changing_edges: {bond_changing_edges_list}")
-                print(f"only_left_edges: {only_left_edges_list}")
-                print(f"only_right_edges; {only_right_edges_list}")
             """ only_left_edges = []
             rightGraph_set_edges = [{p,q} for (p,q) in rightGraph.edges]
             for (u,v) in leftGraph.edges:
