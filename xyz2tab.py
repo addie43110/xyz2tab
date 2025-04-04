@@ -137,6 +137,7 @@ def read_allfrags(args, qcxsm2_dir=".", initial_pname="unnamed"):
 
     parent_name=initial_pname
     parent_gml = pt_to_gml(args, f"{qcxsm2_dir}/in.xyz")
+    write_gml_string(parent_gml, f"./all_fragments/{parent_name}.gml")
     parent_graph = Graph(parent_gml)
     update_parent = False
 
