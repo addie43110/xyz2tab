@@ -60,13 +60,33 @@ class Reaction:
             only_left_nodes = [node for node in leftGraph.nodes if node not in shared_nodes and node not in label_changing_nodes]
 
             # EDGES
+            shared_edges = []
+            for (u, v, attrs1) in leftGraph.edges(data=True):
+                for (p,q,attrs2) in rightGraph.edges(data=True):
+                    if {u,v}=={p,q} and attrs1['bond']==attrs2['bond']:
+                        shared_edges.append({u,v})
+            shared_edges_list = [list(s) for s in shared_edges]
+
             bond_changing_edges = []
             for (u,v,attrs) in leftGraph.edges(data=True):
                 for (p,q,attrs2) in rightGraph.edges(data=True):
                     if {u,v}=={p,q} and attrs['bond']!=attrs2['bond']:
                         bond_changing_edges.append({u,v})
             bond_changing_edges_list = [list(s) for s in bond_changing_edges]
+
             only_left_edges = []
+            for (u,v) in leftGraph.edges:
+                if {u,v} not in shared_edges and {u,v} not in bond_changing_edges:
+                    only_left_edges.append({u,v})
+            only_left_edges_list = [list(s) for s in only_left_edges]
+
+            only_right_edges = []
+            for (u,v) in rightGraph.edges:
+                if {u,v} not in shared_edges and {u,v} not in bond_changing_edges:
+                    only_right_edges.append({u,v})
+            only_right_edges_list = [list(s) for s in only_right_edges]
+
+            """ only_left_edges = []
             rightGraph_set_edges = [{p,q} for (p,q) in rightGraph.edges]
             for (u,v) in leftGraph.edges:
                 if u in only_left_nodes or v in only_left_nodes:
@@ -85,7 +105,7 @@ class Reaction:
             only_right_edges_list = [list(s) for s in only_right_edges]
             shared_edges = [{u,v} for (u,v) in leftGraph.edges if {u,v} not in only_left_edges and {u,v} not in only_right_edges and \
                                                                 {u,v} not in bond_changing_edges]
-            shared_edges_list = [list(s) for s in shared_edges]
+            shared_edges_list = [list(s) for s in shared_edges] """
 
             out = []
             out.append("rule [")

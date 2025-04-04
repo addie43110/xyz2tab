@@ -162,13 +162,6 @@ def read_allfrags(args, qcxsm2_dir=".", initial_pname="unnamed"):
                 f.readline()
                 f.readline() # skip next two lines
 
-                """ [frag1_dir, _, _, _] = f.readline().split()
-                [frag2_dir, _, _, _] = f.readline().split()
-
-                ptf = [f"{qcxsm2_dir}/{d}/fragment.xyz" for d in [frag1_dir, frag2_dir]]
-                read_fragment(args, ptf[0], frag1_dir, parent_graph, parent_name, peak_dict)
-                read_fragment(args, ptf[1], frag2_dir, parent_graph, parent_name, peak_dict) """
-
             elif frag_type=='fragment_type':
                 update_parent = True
 
@@ -178,10 +171,16 @@ def pt_to_gml(args, path_to_fragment):
         bond_table = pt.bond_table
         classification = [classify_bond(x,y) for (x,y) in zip(bond_table['A-B'], bond_table['distance_calc'])]
         gml_string = table_to_gml(classification, pt)
-    # possibly two atoms which don't share a bond!
-    else: #there is only a single atom, so could not make any bond information
-        element = pt.xyz_df.iloc[0]['element']
-        gml_string = f"graph [\n\tnode [ id 0 label {element} ]\n]"
+    else: #there is only one or two atoms which have no bonds
+        lines = []
+        lines.append("graph [")
+        for atom_idx in pt.xyz_df['atom1_idx']:
+            m = re.match(r"([a-zA-Z]+)(\d+)", atom_idx)
+            atom_label = m.group(1)
+            atom_id = m.group(2)
+            lines.append(f"\tnode [ id {atom_id} label \"{atom_label}\" ]")
+        lines.append("]")
+        gml_string = "\n".join(lines)
     return gml_string
     
 
@@ -203,7 +202,7 @@ def read_fragment(args, path_to_fragment, frag_name, parent_graph, parent_name, 
             if peak_dict[f"{frag_name}{fs}"] >= 1:
                 write_gml_string(str(cmp), f"./peak_fragments/{frag_name}{fs}.gml")
                 is_peak = True
-                rule_gml_string = Reaction(educts=[parent_graph], products=ccps, name=f"{parent_name}!!{frag_name}").to_ruleGML_string()
+                # rule_gml_string = Reaction(educts=[parent_graph], products=ccps, name=f"{parent_name}!!{frag_name}").to_ruleGML_string()
     else:
         print(red(f"ERROR: file {frag_name} contains more than 2 fragments. Not writing gml files."))
 
