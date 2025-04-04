@@ -15,8 +15,9 @@ import mod
 #from mpl_toolkits.mplot3d import proj3d                         #for fancy arrows in xyz
 from os import path
 from pathlib import Path
-from pymatgen.core import Element, Composition, Lattice, Structure, Molecule
+""" from pymatgen.core import Element, Composition, Lattice, Structure, Molecule
 from pymatgen.io.xyz import XYZ
+from pymatgen.analysis.chemenv.connectivity.connectivity_finder import ConnectivityFinder """
 
 from graph import Graph
 from reaction import Reaction
@@ -172,8 +173,6 @@ def read_allfrags(args, qcxsm2_dir=".", initial_pname="unnamed"):
                 update_parent = True
 
 def pt_to_gml(args, path_to_fragment):
-    mol = Molecule.from_file(path_to_fragment)
-    print(f"dict: {mol.as_dict()}")
     pt = PrintTab(args, path_to_fragment)
     if pt.has_bond_table:
         bond_table = pt.bond_table

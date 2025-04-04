@@ -162,9 +162,10 @@ class PrintTab:
                                     dist_df['cov_radius2'])+(dist_df['cov_radius1'] + 
                                     dist_df['cov_radius2'])*radii_ext
 
-        #distance is considered as bond if the calculated distance is smaller than the sum of the atomic radii
+        #distance is considered as bond if the calculated distance is smaller than the sum of the atomic radii + tolerance
         #set to 'True' if this is a bond
-        dist_df['is_bond']=(dist_df['distance_calc'] < dist_df['distance_radii'])
+        tolerance = 0.25
+        dist_df['is_bond']=(dist_df['distance_calc'] < (dist_df['distance_radii']+0.25))
 
         #include distances from selected atom (pairs) from args include connections
         #sets 'is_bond' to 'True' if 'False'
