@@ -13,8 +13,9 @@ class Graph:
         
         mod_lg_class = mod.libpymod.Rule.LeftGraph
         mod_rg_class = mod.libpymod.Rule.RightGraph
+        mod_g_class = mod.libpymod.Graph
         update_mod = True
-        if isinstance(graph, mod_lg_class) or isinstance(graph, mod_rg_class):
+        if isinstance(graph, mod_lg_class) or isinstance(graph, mod_rg_class) or isinstance(graph, mod_g_class):
             self._mod_graph = graph
             self._nx_graph = self.mod_to_nx_graph(graph)
             self._gml_string = self.nx_graph_to_GML_string(self._nx_graph)
