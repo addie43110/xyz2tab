@@ -78,8 +78,14 @@ avg_bond_lengths = {
     'C-H' : { 'single' : 1.090},
     'C-O' : { 'single' : 1.430, 'double' : 1.210},
     'C-N' : { 'single' : 1.430, 'double' : 1.380, 'triple' : 1.160},
+    'C-S' : { 'single' : 1.820},
+    'C-P' : { 'single' : 1.840},
+    'C-Cl': { 'single' : 1.760},
+    'C-F' : { 'single' : 1.350},
+    'B-C' : { 'single' : 1.660},
     'H-O' : { 'single' : 0.960},
     'N-O' : { 'single' : 1.360},
+    'H-H' : { 'single' : 1.070},
     'H-N' : { 'single' : 1.020},
     'N-N' : { 'single' : 1.440, 'double' : 1.290, 'triple' : 1.09}
 }
