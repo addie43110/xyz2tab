@@ -173,14 +173,12 @@ def read_allfrags(args, qcxsm2_dir=".", initial_pname="unnamed"):
 
 def pt_to_gml(args, path_to_fragment):
     mol = Molecule.from_file(path_to_fragment)
+    print(f"dict: {mol.as_dict()}")
     pt = PrintTab(args, path_to_fragment)
     if pt.has_bond_table:
         bond_table = pt.bond_table
         classification = [classify_bond(x,y) for (x,y) in zip(bond_table['A-B'], bond_table['distance_calc'])]
         gml_string = table_to_gml(classification, pt)
-        if "p1f1p6" in path_to_fragment:
-            pt.print_sel_dist_table()
-            print(gml_string)
     # possibly two atoms which don't share a bond!
     else: #there is only a single atom, so could not make any bond information
         element = pt.xyz_df.iloc[0]['element']
