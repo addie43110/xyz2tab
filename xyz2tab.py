@@ -192,16 +192,16 @@ def read_fragment(args, path_to_fragment, frag_name, parent_graph, parent_name, 
 
     is_peak = False
     if len(ccps)==1: #isomer
-        write_gml_string(gml_string, f"./all_fragments/{frag_name}")
+        write_gml_string(gml_string, f"./all_fragments/{frag_name}.gml")
         if peak_dict[frag_name] >= 1:
-            write_gml_string(gml_string, f"./peak_fragments/{frag_name}")
+            write_gml_string(gml_string, f"./peak_fragments/{frag_name}.gml")
             is_peak = True
     elif len(ccps)==2: # pair fragments
         frag_suffixes = ["f1", "f2"]
         for fs, cmp in zip(frag_suffixes, ccps):
-            write_gml_string(str(cmp), f"./all_fragments/{frag_name}{fs}")
+            write_gml_string(str(cmp), f"./all_fragments/{frag_name}{fs}.gml")
             if peak_dict[f"{frag_name}{fs}"] >= 1:
-                write_gml_string(str(cmp), f"./peak_fragments/{frag_name}{fs}")
+                write_gml_string(str(cmp), f"./peak_fragments/{frag_name}{fs}.gml")
                 is_peak = True
                 print(f"parent_graph: {parent_graph}")
                 print(f"ccps: {ccps}")
