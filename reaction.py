@@ -74,7 +74,8 @@ class Reaction:
                     if debug:
                         print(f"attrs['bond']: {attrs['bond']}")
                         print(f"attrs2['bond']: {attrs2['bond']}")
-                        print(f"bond changes?: {red(attrs['bond']==attrs2['bond'])}\n")
+                        print(f"bond changes?: {red(attrs['bond']!=attrs2['bond'])}")
+                        print(f"bond types: {type(attrs['bond'])}, {type(attrs2['bond'])}\n")
                     if {u,v}=={p,q} and attrs['bond']!=attrs2['bond']:
                         bond_changing_edges.append({u,v})
             bond_changing_edges_list = [list(s) for s in bond_changing_edges]
