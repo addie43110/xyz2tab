@@ -86,6 +86,9 @@ class Reaction:
                     only_right_edges.append({u,v})
             only_right_edges_list = [list(s) for s in only_right_edges]
 
+            if self._name == "p1f1!!p1f1p7":
+                print(f"shared_edges: {shared_edges_list}")
+                print(f"only_left_edges: {only_left_edges_list}")
             """ only_left_edges = []
             rightGraph_set_edges = [{p,q} for (p,q) in rightGraph.edges]
             for (u,v) in leftGraph.edges:
