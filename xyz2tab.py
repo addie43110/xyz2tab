@@ -16,6 +16,7 @@ import mod
 from os import path
 from pathlib import Path
 from pymatgen.core import Element, Composition, Lattice, Structure, Molecule
+from pymatgen.io.xyz import XYZ
 
 from graph import Graph
 from reaction import Reaction
@@ -171,6 +172,7 @@ def read_allfrags(args, qcxsm2_dir=".", initial_pname="unnamed"):
                 update_parent = True
 
 def pt_to_gml(args, path_to_fragment):
+    mol = Molecule.from_file(path_to_fragment)
     pt = PrintTab(args, path_to_fragment)
     if pt.has_bond_table:
         bond_table = pt.bond_table
@@ -179,6 +181,7 @@ def pt_to_gml(args, path_to_fragment):
         if "p1f1p6" in path_to_fragment:
             pt.print_sel_dist_table()
             print(gml_string)
+    # possibly two atoms which don't share a bond!
     else: #there is only a single atom, so could not make any bond information
         element = pt.xyz_df.iloc[0]['element']
         gml_string = f"graph [\n\tnode [ id 0 label {element} ]\n]"
