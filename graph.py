@@ -5,7 +5,6 @@ import re
 
 from prettify import red, warn
 from lookup_tables import valence_electrons
-from reaction import count_bonds
 
 # each vertex has attribute "label" which stores string label
 # each edge has attribute "bond" which stores bond order (-, =, etc.)
@@ -99,7 +98,7 @@ class Graph:
 
         for v, attrs1 in self._nx_graph.nodes(data=True):
             full_label = attrs1['label']
-            m = re.match(r"^([a-zA-Z]+)([\-\+])?$", full_label)
+            m = re.match(r"^([a-zA-Z]+)([-\+])?$", full_label)
             atom_name = m.group(1)
 
             # if the label already has a charge, assume it is correct and skip
