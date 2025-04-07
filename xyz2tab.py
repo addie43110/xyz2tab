@@ -135,8 +135,8 @@ def read_allfrags(args, qcxsm2_dir=".", initial_pname="unnamed"):
 
     parent_name=initial_pname
     parent_gml = pt_to_gml(args, f"{qcxsm2_dir}/in.xyz")
-    parent_m = Chem.MolFromXYZFile(f"{qcxsm2_dir}/in.xyz")
-    print(f"rdkit mol type: {type(parent_m)}")
+    #parent_m = Chem.MolFromXYZFile(f"{qcxsm2_dir}/in.xyz")
+    #print(f"rdkit mol type: {type(parent_m)}")
     write_gml_string(parent_gml, f"./all_fragments/{parent_name}.gml")
     parent_graph = Graph(parent_gml)
     update_parent = False
