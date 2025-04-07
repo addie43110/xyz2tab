@@ -135,6 +135,8 @@ def read_allfrags(args, qcxsm2_dir=".", initial_pname="unnamed"):
 
     parent_name=initial_pname
     parent_gml = pt_to_gml(args, f"{qcxsm2_dir}/in.xyz")
+    parent_m = Chem.MolFromXYZFile(f"{qcxsm2_dir}/in.xyz")
+    print(f"rdkit mol type: {type(parent_m)}")
     write_gml_string(parent_gml, f"./all_fragments/{parent_name}.gml")
     parent_graph = Graph(parent_gml)
     update_parent = False
@@ -201,7 +203,6 @@ def read_fragment(args, path_to_fragment, frag_name, parent_graph, parent_name, 
             if peak_dict[f"{frag_name}{fs}"] >= 1:
                 write_gml_string(str(cmp), f"./peak_fragments/{frag_name}{fs}.gml")
                 is_peak = True
-                # rule_gml_string = Reaction(educts=[parent_graph], products=ccps, name=f"{parent_name}!!{frag_name}").to_ruleGML_string()
     else:
         print(red(f"ERROR: file {frag_name} contains more than 2 fragments. Not writing gml files."))
 
