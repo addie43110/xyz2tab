@@ -1,9 +1,11 @@
 import mod
 import networkx as nx
 import time
+import re
 
 from prettify import red, warn
-# from rdkit import Chem
+from lookup_tables import valence_electrons
+from reaction import count_bonds
 
 # each vertex has attribute "label" which stores string label
 # each edge has attribute "bond" which stores bond order (-, =, etc.)
@@ -88,6 +90,24 @@ class Graph:
         out.append("]")
 
         return "\n".join(out)
+
+    """ def calculate_formal_charge(self):
+        if self._num_components > 1:
+            for c in self._components:
+                c.calculate_charge()
+            return
+
+        for v, attrs1 in self._nx_graph.nodes(data=True):
+            full_label = attrs1['label']
+            m = re.match(r"^([a-zA-Z]+)([\-\+])?$", full_label)
+            atom_name = m.group(1)
+
+            # if the label already has a charge, assume it is correct and skip
+            if m.group(2):
+                continue
+            
+            valence_electrons[atom_name] - count_bonds(self._nx_graph, v) """
+
 
     @property
     def nx_graph(self):
