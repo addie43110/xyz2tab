@@ -16,7 +16,7 @@ import mod
 from os import path
 from pathlib import Path
 import rdkit
-from rdkit import Chem
+# from rdkit import Chem
 
 from graph import Graph
 from reaction import Reaction
