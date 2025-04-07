@@ -15,7 +15,7 @@ import mod
 #from mpl_toolkits.mplot3d import proj3d                         #for fancy arrows in xyz
 from os import path
 from pathlib import Path
-from rdkit import Chem
+# from rdkit import Chem
 
 from graph import Graph
 from reaction import Reaction
