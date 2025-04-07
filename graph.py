@@ -3,7 +3,7 @@ import networkx as nx
 import time
 
 from prettify import red, warn
-from rdkit import Chem
+# from rdkit import Chem
 
 # each vertex has attribute "label" which stores string label
 # each edge has attribute "bond" which stores bond order (-, =, etc.)
