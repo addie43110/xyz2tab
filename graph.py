@@ -98,7 +98,7 @@ class Graph:
 
         for v, attrs1 in self._nx_graph.nodes(data=True):
             full_label = attrs1['label']
-            m = re.match(r"^([a-zA-Z]+)([-\+])?$", full_label)
+            m = re.match(r"^([a-zA-Z]+)([-+])?$", full_label)
             atom_name = m.group(1)
 
             # if the label already has a charge, assume it is correct and skip
