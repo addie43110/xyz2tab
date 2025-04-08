@@ -181,15 +181,18 @@ def xyz_to_gml(path_to_xyz):
     mol = openbabel.OBMol()
     conv_obj.ReadFile(mol, path_to_xyz)
 
-    with open(f"{parent_dirs}charges"):
-        line = f.readline()
-        total_charge = 0.0
-        while line:
-            total_charge+=float(line.strip())
-    
-    if round(total_charge)!=0:
-        print(f"total charge: {total_charge}")
-        mol.SetTotalCharge(total_charge)   
+    try:
+        with open(f"{parent_dirs}charges"):
+            line = f.readline()
+            total_charge = 0.0
+            while line:
+                total_charge+=float(line.strip())
+        
+        if round(total_charge)!=0:
+            print(f"total charge: {total_charge}")
+            mol.SetTotalCharge(total_charge)
+    except:
+        pass
 
 
     #for bond in openbabel.OBMolBondIter(mol):
