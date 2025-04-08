@@ -182,7 +182,7 @@ def xyz_to_gml(path_to_xyz):
     #for bond in openbabel.OBMolBondIter(mol):
     #    print(f"start: {bond.GetBeginAtomIdx()}, end: {bond.GetEndAtomIdx()}, length: {bond.GetLength()}, order: {bond.GetBondOrder()}")
 
-    charge_model = openbabel.OBChargeModel.FindType("qtpie")
+    charge_model = openbabel.OBChargeModel.FindType("gasteiger")
     print("")
     print(f"fragment: {parent_dirs}")
     print(f"charge computed?: {charge_model.ComputeCharges(mol)}")
