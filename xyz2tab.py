@@ -135,6 +135,7 @@ def read_allfrags(args, qcxsm2_dir=".", initial_pname="unnamed"):
 
     parent_name=initial_pname
     parent_gml = pt_to_gml(args, f"{qcxsm2_dir}/in.xyz")
+    xyz_to_gml(f"{qcxsm2_dir}/in.xyz")
     #parent_m = Chem.MolFromXYZFile(f"{qcxsm2_dir}/in.xyz")
     #print(f"rdkit mol type: {type(parent_m)}")
     write_gml_string(parent_gml, f"./all_fragments/{parent_name}.gml")
@@ -175,6 +176,10 @@ def xyz_to_gml(path_to_xyz):
     conv_obj.SetInFormat("xyz")
     mol = openbabel.OBMol()
     conv_obj.ReadFile(mol, path_to_xyz)
+
+    for atom in openbabel.OBMolAtomIter(mol):
+        print(f"type: {atom.GetType()}, atomic num: {atom.GetAtomicNum()}")
+
     charge_model = openbabel.OBChargeModel.FindType("eem2015bn")
     print(f"\n charge computed?: {charge_model.ComputeCharges(mol)}")
     print(f"formal charges: {charge_model.GetFormalCharges()}")
@@ -201,7 +206,7 @@ def pt_to_gml(args, path_to_fragment):
 
 def read_fragment(args, path_to_fragment, frag_name, parent_graph, parent_name, peak_dict):
     gml_string = pt_to_gml(args, path_to_fragment)
-    xyz_to_gml(path_to_fragment)
+    # xyz_to_gml(path_to_fragment)
     g = Graph(gml_string)
     ccps = g.connected_components
 
