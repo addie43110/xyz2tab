@@ -135,9 +135,8 @@ def read_allfrags(args, qcxsm2_dir=".", initial_pname="unnamed"):
 
     parent_name=initial_pname
     parent_gml = pt_to_gml(args, f"{qcxsm2_dir}/in.xyz")
-    xyz_to_gml(f"{qcxsm2_dir}/in.xyz")
-    #parent_m = Chem.MolFromXYZFile(f"{qcxsm2_dir}/in.xyz")
-    #print(f"rdkit mol type: {type(parent_m)}")
+    # xyz_to_gml(f"{qcxsm2_dir}/in.xyz")
+
     write_gml_string(parent_gml, f"./all_fragments/{parent_name}.gml")
     parent_graph = Graph(parent_gml)
     update_parent = False
@@ -171,20 +170,33 @@ def read_allfrags(args, qcxsm2_dir=".", initial_pname="unnamed"):
 
 def xyz_to_gml(path_to_xyz):
     match = re.match(r"^(\S+/)*(\w+.xyz)$", path_to_xyz)
-    parent_dirs = match.group(1)
+    parent_dirs = match.group(1) if match.group(1) else ""
     filename = match.group(2)[:-4]
+
+    print("")
+    print(f"fragment: {parent_dirs}")
 
     conv_obj = openbabel.OBConversion()
     conv_obj.SetInFormat("xyz")
     mol = openbabel.OBMol()
     conv_obj.ReadFile(mol, path_to_xyz)
 
+    with open(f"{parent_dirs}charges"):
+        line = f.readline()
+        total_charge = 0.0
+        while line:
+            total_charge+=float(line.strip())
+    
+    if round(total_charge)!=0:
+        print(f"total charge: {total_charge}")
+        mol.SetTotalCharge(total_charge)   
+
+
     #for bond in openbabel.OBMolBondIter(mol):
     #    print(f"start: {bond.GetBeginAtomIdx()}, end: {bond.GetEndAtomIdx()}, length: {bond.GetLength()}, order: {bond.GetBondOrder()}")
 
     charge_model = openbabel.OBChargeModel.FindType("gasteiger")
-    print("")
-    print(f"fragment: {parent_dirs}")
+    
     print(f"charge computed?: {charge_model.ComputeCharges(mol)}")
     print(f"patial charges: {charge_model.GetPartialCharges()}")
     total_charge = sum(charge_model.GetPartialCharges())
