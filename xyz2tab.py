@@ -183,9 +183,15 @@ def xyz_to_gml(path_to_xyz):
     #    print(f"start: {bond.GetBeginAtomIdx()}, end: {bond.GetEndAtomIdx()}, length: {bond.GetLength()}, order: {bond.GetBondOrder()}")
 
     charge_model = openbabel.OBChargeModel.FindType("mmff94")
-    print(f"\ncharge computed?: {charge_model.ComputeCharges(mol)}")
+    print("")
+    print(f"fragment: {filename}")
+    print(f"charge computed?: {charge_model.ComputeCharges(mol)}")
     print(f"parial charges: {charge_model.GetPartialCharges()}")
-    print(f"total charge: {sum(charge_model.GetPartialCharges())}")
+    total_charge = sum(charge_model.GetPartialCharges())
+    if abs(total_charge) > 0.1:
+        total_charge = warn(total_charge)
+
+    print(f"total charge: {total_charge}")
     # print(f"formal charges:", green(charge_model.GetPartialCharges()) if any([a>0 for a in charge_model.GetFormalCharges()]) else red("None"))
     
 
