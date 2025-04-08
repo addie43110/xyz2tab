@@ -189,9 +189,11 @@ def xyz_to_gml(path_to_xyz):
                 total_charge+=float(line.strip())
                 line = f.readline()
         
+        total_charge = int(round(total_charge))
+        
         if round(total_charge)!=0:
             print(f"total charge: {total_charge}")
-            mol.SetTotalCharge(int(total_charge))
+            mol.SetTotalCharge(total_charge)
 
 
     #for bond in openbabel.OBMolBondIter(mol):
