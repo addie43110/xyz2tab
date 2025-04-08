@@ -4,7 +4,7 @@
 
 import sys
 import re
-import mod
+# import mod
 #import itertools                                                #for r-length tuples, in sorted order, no repeated elements
 #import pandas as pd                                             #pandas tables
 #import numpy as np                                              #for calculations
@@ -15,8 +15,8 @@ import mod
 #from mpl_toolkits.mplot3d import proj3d                         #for fancy arrows in xyz
 from os import path
 from pathlib import Path
-import rdkit
-# from rdkit import Chem
+from openbabel import openbabel
+from rdkit import Chem
 
 from graph import Graph
 from reaction import Reaction
@@ -100,14 +100,19 @@ def make_exist_dir(dir_path):
 def updateParent(directory):
     match = re.match(r"^(\w*)([pf]\d+)(?:p\d+)(?:f\d+)?$", directory)
     parent_filename = match.group(1)+match.group(2)
-    try:
+
+    with open(f"./all_fragments/{parent_filename}.gml") as f:
+        gml_str = f.read()
+
+    
+    """ try:
         parent_graph = mod.Graph.fromGMLFile(f"./all_fragments/{parent_filename}.gml")
     except:
         print(f"Parent fragment {parent_filename} not found. Omitting rules with direct children.")
         # print(f"Printing contents of {parent_dir}...")
         # print(s)
-        return (None, None)
-    parent_graph = Graph(parent_graph)
+        return (None, None) """
+    parent_graph = Graph(gml_str)
     return (parent_graph, parent_filename)
 
 """ Opens the file 'allpeaks.dat' found in the root directory of the 
@@ -166,6 +171,19 @@ def read_allfrags(args, qcxsm2_dir=".", initial_pname="unnamed"):
 
             elif frag_type=='fragment_type':
                 update_parent = True
+
+def xyz_to_gml(path_to_xyz):
+    match = re.match(r"^(\S+/)*(\w+.xyz)$", path_to_xyz)
+    parent_dirs = match.group(1)
+    filename = match.group(2)[:-4]
+
+    if parent_dirs:
+
+    conv_obj = openbabel.OBConversion()
+    conv_obj.SetInFormat("xyz")
+    mol = openbabel.OBMol()
+    conv_obj.ReadFile(mol, path_to_xyz)
+    
 
 def pt_to_gml(args, path_to_fragment):
     pt = PrintTab(args, path_to_fragment)
