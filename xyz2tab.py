@@ -181,7 +181,7 @@ def xyz_to_gml(path_to_xyz):
     mol = openbabel.OBMol()
     conv_obj.ReadFile(mol, path_to_xyz)
 
-    try:
+    if Path(f"{parent_dirs}charges").is_file():
         with open(f"{parent_dirs}charges"):
             line = f.readline()
             total_charge = 0.0
@@ -192,8 +192,6 @@ def xyz_to_gml(path_to_xyz):
         if round(total_charge)!=0:
             print(f"total charge: {total_charge}")
             mol.SetTotalCharge(total_charge)
-    except:
-        pass
 
 
     #for bond in openbabel.OBMolBondIter(mol):
@@ -201,13 +199,13 @@ def xyz_to_gml(path_to_xyz):
 
     charge_model = openbabel.OBChargeModel.FindType("gasteiger")
     
-    print(f"charge computed?: {charge_model.ComputeCharges(mol)}")
-    print(f"partial charges: {charge_model.GetPartialCharges()}")
+    #print(f"charge computed?: {charge_model.ComputeCharges(mol)}")
+    #print(f"partial charges: {charge_model.GetPartialCharges()}")
     total_charge = sum(charge_model.GetPartialCharges())
     if abs(total_charge) > 0:
         total_charge = warn(total_charge)
 
-    print(f"total charge: {total_charge}")
+    #print(f"total charge: {total_charge}")
     # print(f"formal charges:", green(charge_model.GetPartialCharges()) if any([a>0 for a in charge_model.GetFormalCharges()]) else red("None"))
     
 
