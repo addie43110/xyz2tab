@@ -182,7 +182,7 @@ def xyz_to_gml(path_to_xyz):
     conv_obj.ReadFile(mol, path_to_xyz)
 
     if Path(f"{parent_dirs}charges").is_file():
-        with open(f"{parent_dirs}charges"):
+        with open(f"{parent_dirs}charges") as f:
             line = f.readline()
             total_charge = 0.0
             while line:
