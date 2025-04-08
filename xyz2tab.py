@@ -177,11 +177,11 @@ def xyz_to_gml(path_to_xyz):
     mol = openbabel.OBMol()
     conv_obj.ReadFile(mol, path_to_xyz)
 
-    for bond in openbabel.OBMolBondIter(mol):
-        print(f"start: {bond.GetBeginAtomIdx()}, end: {bond.GetEndAtomIdx()}, length: {bond.GetLength()}, order: {bond.GetBondOrder()}")
+    #for bond in openbabel.OBMolBondIter(mol):
+    #    print(f"start: {bond.GetBeginAtomIdx()}, end: {bond.GetEndAtomIdx()}, length: {bond.GetLength()}, order: {bond.GetBondOrder()}")
 
     charge_model = openbabel.OBChargeModel.FindType("eem")
-    print(f"\n charge computed?: {charge_model.ComputeCharges(mol)}")
+    print(f"\ncharge computed?: {charge_model.ComputeCharges(mol)}")
     print(f"formal charges: {charge_model.GetFormalCharges()}")
     
 
@@ -206,7 +206,7 @@ def pt_to_gml(args, path_to_fragment):
 
 def read_fragment(args, path_to_fragment, frag_name, parent_graph, parent_name, peak_dict):
     gml_string = pt_to_gml(args, path_to_fragment)
-    # xyz_to_gml(path_to_fragment)
+    xyz_to_gml(path_to_fragment)
     g = Graph(gml_string)
     ccps = g.connected_components
 
