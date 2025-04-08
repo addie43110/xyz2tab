@@ -182,12 +182,12 @@ def xyz_to_gml(path_to_xyz):
     #for bond in openbabel.OBMolBondIter(mol):
     #    print(f"start: {bond.GetBeginAtomIdx()}, end: {bond.GetEndAtomIdx()}, length: {bond.GetLength()}, order: {bond.GetBondOrder()}")
 
-    charge_model = openbabel.OBChargeModel.FindType("qeq")
+    charge_model = openbabel.OBChargeModel.FindType("qtpie")
     print("")
     print(f"fragment: {parent_dirs}")
     print(f"charge computed?: {charge_model.ComputeCharges(mol)}")
     print(f"patial charges: {charge_model.GetPartialCharges()}")
-    total_charge = round(sum(charge_model.GetPartialCharges()))
+    total_charge = sum(charge_model.GetPartialCharges())
     if abs(total_charge) > 0:
         total_charge = warn(total_charge)
 
