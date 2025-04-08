@@ -182,7 +182,7 @@ def xyz_to_gml(path_to_xyz):
     #for bond in openbabel.OBMolBondIter(mol):
     #    print(f"start: {bond.GetBeginAtomIdx()}, end: {bond.GetEndAtomIdx()}, length: {bond.GetLength()}, order: {bond.GetBondOrder()}")
 
-    charge_model = openbabel.OBChargeModel.FindType("eem")
+    charge_model = openbabel.OBChargeModel.FindType("mmff94")
     print(f"\ncharge computed?: {charge_model.ComputeCharges(mol)}")
     print(f"formal charges:", red("None") if any(charge_model.GetFormalCharges()) else green(charge_model.GetFormalCharges()))
     
