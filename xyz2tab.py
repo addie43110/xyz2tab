@@ -184,7 +184,7 @@ def xyz_to_gml(path_to_xyz):
 
     charge_model = openbabel.OBChargeModel.FindType("mmff94")
     print("")
-    print(f"fragment: {filename}")
+    print(f"fragment: {parent_dirs}")
     print(f"charge computed?: {charge_model.ComputeCharges(mol)}")
     print(f"parial charges: {charge_model.GetPartialCharges()}")
     total_charge = sum(charge_model.GetPartialCharges())
