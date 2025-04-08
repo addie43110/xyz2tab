@@ -16,7 +16,6 @@ import re
 from os import path
 from pathlib import Path
 from openbabel import openbabel
-from rdkit import Chem
 
 from graph import Graph
 from reaction import Reaction
@@ -177,14 +176,13 @@ def xyz_to_gml(path_to_xyz):
     parent_dirs = match.group(1)
     filename = match.group(2)[:-4]
 
-    mol = Chem.MolFromXYZFile(path_to_xyz)
-    for atom in mol.GetAtoms():
-        print(atom.GetFormalCharge())
-
-    """ conv_obj = openbabel.OBConversion()
+    conv_obj = openbabel.OBConversion()
     conv_obj.SetInFormat("xyz")
     mol = openbabel.OBMol()
-    conv_obj.ReadFile(mol, path_to_xyz) """
+    conv_obj.ReadFile(mol, path_to_xyz)
+    charge_model = openbabel.OBChargeModel()
+    charge_model.ComputeCharges(mol)
+    charge_model.GetFormalCharges()
     
 
 def pt_to_gml(args, path_to_fragment):
