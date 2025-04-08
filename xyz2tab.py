@@ -160,6 +160,8 @@ def read_allfrags(args, qcxsm2_dir=".", initial_pname="unnamed"):
 
             elif frag_type=='fragmentpair':
                 path_to_pair = f"{qcxsm2_dir}/{dire}/pair.xyz"
+                xyz_to_gml(f"{qcxsm2_dir}/{dire}f1/fragment.xyz")
+                xyz_to_gml(f"{qcxsm2_dir}/{dire}f2/fragment.xyz")
                 read_fragment(args, path_to_pair, dire, parent_graph, parent_name, peak_dict)
                 f.readline()
                 f.readline() # skip next two lines
@@ -206,7 +208,6 @@ def pt_to_gml(args, path_to_fragment):
 
 def read_fragment(args, path_to_fragment, frag_name, parent_graph, parent_name, peak_dict):
     gml_string = pt_to_gml(args, path_to_fragment)
-    xyz_to_gml(path_to_fragment)
     g = Graph(gml_string)
     ccps = g.connected_components
 
