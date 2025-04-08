@@ -177,8 +177,8 @@ def xyz_to_gml(path_to_xyz):
     mol = openbabel.OBMol()
     conv_obj.ReadFile(mol, path_to_xyz)
 
-    for atom in openbabel.OBMolAtomIter(mol):
-        print(f"type: {atom.GetType()}, atomic num: {atom.GetAtomicNum()}")
+    for bond in openbabel.OBMolBondIter(mol):
+        print(f"start: {bond.GetBeginAtomIdx()}, end: {bond.GetEndAtomIdx()}, length: {bond.GetLength()}, order: {bond.GetBondOrder()}")
 
     charge_model = openbabel.OBChargeModel.FindType("eem2015bn")
     print(f"\n charge computed?: {charge_model.ComputeCharges(mol)}")
