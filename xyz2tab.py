@@ -177,12 +177,14 @@ def xyz_to_gml(path_to_xyz):
     parent_dirs = match.group(1)
     filename = match.group(2)[:-4]
 
-    if parent_dirs:
+    mol = Chem.MolFromXYZFile(path_to_xyz)
+    for atom in mol.GetAtoms():
+        print(atom.GetFormalCharge())
 
-    conv_obj = openbabel.OBConversion()
+    """ conv_obj = openbabel.OBConversion()
     conv_obj.SetInFormat("xyz")
     mol = openbabel.OBMol()
-    conv_obj.ReadFile(mol, path_to_xyz)
+    conv_obj.ReadFile(mol, path_to_xyz) """
     
 
 def pt_to_gml(args, path_to_fragment):
@@ -206,6 +208,7 @@ def pt_to_gml(args, path_to_fragment):
 
 def read_fragment(args, path_to_fragment, frag_name, parent_graph, parent_name, peak_dict):
     gml_string = pt_to_gml(args, path_to_fragment)
+    xyz_to_gml(path_to_fragment)
     g = Graph(gml_string)
     ccps = g.connected_components
 
