@@ -106,7 +106,7 @@ def updateParent(directory):
         # print(f"Printing contents of {parent_dir}...")
         # print(s)
         return (None, None)
-    parent_graph = Graph(gml_str)
+    parent_graph = Graph(parent_graph)
     return (parent_graph, parent_filename)
 
 """ Opens the file 'allpeaks.dat' found in the root directory of the 
@@ -177,7 +177,7 @@ def xyz_to_gml(path_to_xyz):
     conv_obj.ReadFile(mol, path_to_xyz)
     charge_model = openbabel.OBChargeModel("gasteiger")
     charge_model.ComputeCharges(mol)
-    charge_model.GetFormalCharges()
+    print(f"formal charges: {charge_model.GetFormalCharges()}")
     
 
 def pt_to_gml(args, path_to_fragment):
