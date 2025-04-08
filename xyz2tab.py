@@ -195,6 +195,10 @@ def xyz_to_gml(path_to_xyz):
             print(f"total charge: {total_charge}")
             mol.SetTotalCharge(total_charge)
 
+        for atom in openbabel.OBMolAtomIter(mol):
+            if mol.GetFormalCharge() != 0:
+                print(f"{atom.GetType()}  -- {atom.GetFormalCharge()}"
+
 
     #for bond in openbabel.OBMolBondIter(mol):
     #    print(f"start: {bond.GetBeginAtomIdx()}, end: {bond.GetEndAtomIdx()}, length: {bond.GetLength()}, order: {bond.GetBondOrder()}")
