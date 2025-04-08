@@ -197,7 +197,7 @@ def xyz_to_gml(path_to_xyz):
 
         for atom in openbabel.OBMolAtomIter(mol):
             if mol.GetFormalCharge() != 0:
-                print(f"{atom.GetType()}  -- {atom.GetFormalCharge()}"
+                print(f"{atom.GetType()}  -- {atom.GetFormalCharge()}")
 
 
     #for bond in openbabel.OBMolBondIter(mol):
