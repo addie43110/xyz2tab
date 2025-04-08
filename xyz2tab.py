@@ -4,7 +4,7 @@
 
 import sys
 import re
-import mod
+# import mod
 #import itertools                                                #for r-length tuples, in sorted order, no repeated elements
 #import pandas as pd                                             #pandas tables
 #import numpy as np                                              #for calculations
