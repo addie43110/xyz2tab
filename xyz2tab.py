@@ -4,7 +4,7 @@
 
 import sys
 import re
-# import mod
+import mod
 #import itertools                                                #for r-length tuples, in sorted order, no repeated elements
 #import pandas as pd                                             #pandas tables
 #import numpy as np                                              #for calculations
@@ -99,18 +99,13 @@ def make_exist_dir(dir_path):
 def updateParent(directory):
     match = re.match(r"^(\w*)([pf]\d+)(?:p\d+)(?:f\d+)?$", directory)
     parent_filename = match.group(1)+match.group(2)
-
-    with open(f"./all_fragments/{parent_filename}.gml") as f:
-        gml_str = f.read()
-
-    
-    """ try:
+    try:
         parent_graph = mod.Graph.fromGMLFile(f"./all_fragments/{parent_filename}.gml")
     except:
         print(f"Parent fragment {parent_filename} not found. Omitting rules with direct children.")
         # print(f"Printing contents of {parent_dir}...")
         # print(s)
-        return (None, None) """
+        return (None, None)
     parent_graph = Graph(gml_str)
     return (parent_graph, parent_filename)
 
