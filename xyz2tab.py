@@ -184,7 +184,7 @@ def xyz_to_gml(path_to_xyz):
 
     charge_model = openbabel.OBChargeModel.FindType("eem")
     print(f"\ncharge computed?: {charge_model.ComputeCharges(mol)}")
-    print(f"formal charges: {charge_model.GetFormalCharges()}")
+    print(f"formal charges:", red("None") if any(charge_model.GetFormalCharges() else green(charge_model.GetFormalCharges())))
     
 
 def pt_to_gml(args, path_to_fragment):
