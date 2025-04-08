@@ -175,7 +175,7 @@ def xyz_to_gml(path_to_xyz):
     conv_obj.SetInFormat("xyz")
     mol = openbabel.OBMol()
     conv_obj.ReadFile(mol, path_to_xyz)
-    charge_model = openbabel.OBChargeModel("gasteiger")
+    charge_model = openbabel.OBChargeModel("mmff94")
     charge_model.ComputeCharges(mol)
     print(f"formal charges: {charge_model.GetFormalCharges()}")
     
