@@ -180,9 +180,9 @@ def xyz_to_gml(path_to_xyz):
     for bond in openbabel.OBMolBondIter(mol):
         print(f"start: {bond.GetBeginAtomIdx()}, end: {bond.GetEndAtomIdx()}, length: {bond.GetLength()}, order: {bond.GetBondOrder()}")
 
-    charge_model = openbabel.OBChargeModel.FindType("eem2015bn")
+    charge_model = openbabel.OBChargeModel.FindType("eem")
     print(f"\n charge computed?: {charge_model.ComputeCharges(mol)}")
-    print(f"formal charges: {charge_model.GetPartialCharges()}")
+    print(f"formal charges: {charge_model.GetFormalCharges()}")
     
 
 def pt_to_gml(args, path_to_fragment):
