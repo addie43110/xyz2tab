@@ -188,7 +188,7 @@ def xyz_to_gml(path_to_xyz):
     print(f"charge computed?: {charge_model.ComputeCharges(mol)}")
     print(f"parial charges: {charge_model.GetPartialCharges()}")
     total_charge = round(sum(charge_model.GetPartialCharges()))
-    if total_charge > 0:
+    if abs(total_charge) > 0:
         total_charge = warn(total_charge)
 
     print(f"total charge: {total_charge}")
