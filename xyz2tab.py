@@ -187,6 +187,7 @@ def xyz_to_gml(path_to_xyz):
             total_charge = 0.0
             while line:
                 total_charge+=float(line.strip())
+                line = f.readline()
         
         if round(total_charge)!=0:
             print(f"total charge: {total_charge}")
@@ -201,7 +202,7 @@ def xyz_to_gml(path_to_xyz):
     charge_model = openbabel.OBChargeModel.FindType("gasteiger")
     
     print(f"charge computed?: {charge_model.ComputeCharges(mol)}")
-    print(f"patial charges: {charge_model.GetPartialCharges()}")
+    print(f"partial charges: {charge_model.GetPartialCharges()}")
     total_charge = sum(charge_model.GetPartialCharges())
     if abs(total_charge) > 0:
         total_charge = warn(total_charge)
